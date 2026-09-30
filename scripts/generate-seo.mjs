@@ -3,10 +3,14 @@ import { loadEnv } from 'vite';
 import { experiences, photos } from '../src/data/experiences.ts';
 import { company } from '../src/data/company.ts';
 import { en } from '../src/i18n/en.ts';
-import { normalizeBasePath } from '../src/utils/deployment.ts';
+import {
+  githubPagesBasePath,
+  githubPagesOrigin,
+  normalizeBasePath,
+} from '../src/utils/deployment.ts';
 const env = loadEnv('production', process.cwd(), 'VITE_');
-const domain = (env.VITE_SITE_URL || '').replace(/\/$/, '');
-const base = normalizeBasePath(env.VITE_BASE_PATH || '/');
+const domain = (env.VITE_SITE_URL || githubPagesOrigin).replace(/\/$/, '');
+const base = normalizeBasePath(env.VITE_BASE_PATH || githubPagesBasePath);
 if (domain) {
   const parsed = new URL(domain);
   if (
@@ -69,6 +73,20 @@ for (const [route, title, description] of routes) {
   await mkdir('dist/' + route, { recursive: true });
   await writeFile('dist/' + (route ? route + '/' : '') + 'index.html', html);
 }
+// GitHub Pages serves directory indexes for known routes and this shell for unknown paths.
+// Absolute Vite/base-aware asset URLs allow the app to render its branded 404 at the original URL.
+const notFound = source
+  .replace(
+    /<title>[\s\S]*?<\/title>/,
+    `<title>${escape(en['notFound.metaTitle'])} | ${company.companyName}</title>`,
+  )
+  .replace(
+    /(<meta\s+name="description"\s+content=")[^"]*/,
+    `$1${escape(en['notFound.metaDescription'])}`,
+  )
+  .replace('</head>', '<meta name="robots" content="noindex, follow"/></head>');
+await writeFile('dist/404.html', notFound);
+await writeFile('dist/.nojekyll', '');
 if (domain) {
   await writeFile(
     'dist/sitemap.xml',

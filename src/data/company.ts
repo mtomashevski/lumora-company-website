@@ -1,4 +1,5 @@
 import type { LocalizedText } from '../i18n/types';
+import { githubPagesOrigin } from '../utils/deployment.ts';
 export interface Director {
   id: string;
   name: string;
@@ -36,6 +37,6 @@ export const company = {
 };
 // Public build settings are separate so SEO generation can import the verified config in Node.
 export const website = {
-  siteUrl: import.meta.env?.VITE_SITE_URL || '',
+  siteUrl: import.meta.env?.VITE_SITE_URL || (import.meta.env?.PROD ? githubPagesOrigin : ''),
   inquiryEndpoint: import.meta.env?.VITE_INQUIRY_ENDPOINT || '',
 };

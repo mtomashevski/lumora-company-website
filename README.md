@@ -8,7 +8,7 @@
 
 | Ресурс             | Адреса / статус                                                                               |
 | ------------------ | --------------------------------------------------------------------------------------------- |
-| Јавна веб-страница | **[Да се дополни по објавување]**                                                             |
+| Јавна веб-страница | [Очекувана адреса на GitHub Pages](https://mtomashevski.github.io/lumora-company-website/)    |
 | Репозиториум       | [mtomashevski/lumora-company-website](https://github.com/mtomashevski/lumora-company-website) |
 | Instagram          | [@lumoraadventures](https://www.instagram.com/lumoraadventures/)                              |
 | GetYourGuide       | [Lumora Company](https://www.getyourguide.com/lumora-company-s800323/)                        |
@@ -139,7 +139,9 @@ public/
     hero/, destinations/, about/  Постари неактивни stock ресурси
     fallback.svg / CREDITS.md
   robots.txt / _redirects
-scripts/generate-seo.mjs   Build метаподатоци
+scripts/generate-seo.mjs   Build метаподатоци и 404.html
+scripts/serve-pages.mjs    Статички Pages QA сервер
+.github/workflows/        deploy-pages.yml
 tests/site.spec.ts         Browser тестови
 docs/screenshots/          README снимки
 vite.config.ts / tsconfig*.json / eslint.config.js
@@ -236,11 +238,11 @@ Accessibility мерките вклучуваат semantic HTML, еден h1, sk
 
 [usePageMeta.ts](src/hooks/usePageMeta.ts) ажурира title/description, Open Graph, language и robots по навигација/јазик. Со домен додава canonical/OG URL/image. Clean slug, headings и alt ја прават содржината читлива за пребарувачи и посетители.
 
-[generate-seo.mjs](scripts/generate-seo.mjs) генерира англиски HTML метаподатоци за шест main рути + пет тури (11 тековно). Body е client-rendered; нема целосен SSR. Само со `VITE_SITE_URL` создава sitemap, canonical/OG URL и TravelAgency JSON-LD со вистински name/address/identifier/social links, без измислени reviews. Robots и favicon постојат и без домен. Нема посебни language URLs/hreflang.
+[generate-seo.mjs](scripts/generate-seo.mjs) генерира англиски HTML метаподатоци за шест main рути + пет тури (11 тековно). Body е client-rendered; нема целосен SSR. Со production origin (GitHub Pages default или `VITE_SITE_URL` override) создава sitemap, canonical/OG URL и TravelAgency JSON-LD со вистински name/address/identifier/social links, без измислени reviews. Robots и favicon постојат и без домен. Нема посебни language URLs/hreflang.
 
 Privacy опишува local inquiry, language-only localStorage, локални фотографии и надворешни сервиси. Нема analytics/tracking cookies, па нема fake consent banner. Хостот може да води access logs; надворешните сервиси имаат свои правила. Основните правни текстови не се професионален правен совет.
 
-Обработени се invalid route/slug, празни filters, image fallback, missing optional channels, blocked storage, invalid form, future request error/timeout и React rendering errors преку `ErrorBoundary`. Тој не ги фаќа сите async/browser грешки. Мал познат deployment edge: boundary recovery link е `href="/"`, па на subdirectory води кон host root. Ова е документирано, без code change во оваа задача.
+Обработени се invalid route/slug, празни filters, image fallback, missing optional channels, blocked storage, invalid form, future request error/timeout и React rendering errors преку `ErrorBoundary`. Тој не ги фаќа сите async/browser грешки. Recovery врската на ErrorBoundary ја користи апликациската база, па враќа во Lumora и при hosting во поддиректориум.
 
 <a id="mk-deployment"></a>
 
@@ -257,15 +259,16 @@ pnpm dev
 
 Default dev URL е `http://localhost:5173`; Vite го покажува вистинскиот порт ако е зафатен. Копирајте `.env.example` во `.env.local` ако треба да менувате поставки. За root local приказ defaults се доволни.
 
-| Команда          | Ефект                                                         |
-| ---------------- | ------------------------------------------------------------- |
-| `pnpm dev`       | Vite dev server                                               |
-| `pnpm typecheck` | `tsc -b --pretty false`                                       |
-| `pnpm lint`      | `eslint .`                                                    |
-| `pnpm build`     | `tsc -b`, Vite build, Node SEO script со TypeScript stripping |
-| `pnpm preview`   | Локално сервирање на `dist/`, default 4173                    |
-| `pnpm test`      | Playwright, со претходно стартуван сервер                     |
-| `pnpm format`    | Prettier за src/Vite/index; README не е во оваа команда       |
+| Команда              | Ефект                                                         |
+| -------------------- | ------------------------------------------------------------- |
+| `pnpm dev`           | Vite dev server                                               |
+| `pnpm typecheck`     | `tsc -b --pretty false`                                       |
+| `pnpm lint`          | `eslint .`                                                    |
+| `pnpm build`         | `tsc -b`, Vite build, Node SEO script со TypeScript stripping |
+| `pnpm preview:pages` | Строг статички Pages QA сервер на 4180, без SPA rewrite       |
+| `pnpm preview`       | Локално сервирање на `dist/`, default 4173                    |
+| `pnpm test`          | Playwright, со претходно стартуван сервер                     |
+| `pnpm format`        | Prettier за src/Vite/index; README не е во оваа команда       |
 
 ```sh
 pnpm typecheck
@@ -276,11 +279,11 @@ pnpm preview --host 127.0.0.1 --port 4173
 
 `dist/` содржи JS/CSS, public ресурси и route HTML. Preview не е јавен production hosting. Промените во build env бараат rebuild.
 
-| Поставка                | Значење                                                                                    |
-| ----------------------- | ------------------------------------------------------------------------------------------ |
-| `VITE_SITE_URL`         | Потврден HTTP(S) origin без pathname/credentials/trailing slash; празно додека не е познат |
-| `VITE_BASE_PATH`        | Точна public pathname со leading/trailing `/`; default `/`                                 |
-| `VITE_INQUIRY_ENDPOINT` | Опционален јавен POST endpoint, тековно празен; не тајна                                   |
+| Поставка                | Значење                                                                                                     |
+| ----------------------- | ----------------------------------------------------------------------------------------------------------- |
+| `VITE_SITE_URL`         | HTTP(S) origin без pathname/credentials/trailing slash; production default `https://mtomashevski.github.io` |
+| `VITE_BASE_PATH`        | Точна public pathname; production default `/lumora-company-website/`, dev default `/`                       |
+| `VITE_INQUIRY_ENDPOINT` | Опционален јавен POST endpoint, тековно празен; не тајна                                                    |
 
 **FCSE/ФИНКИ:** побарајте точен public origin, целосна account/project pathname, directory-index правила и SPA fallback можност. Нема претпоставен URL или готов FCSE workflow. Vite base и [deployment.ts](src/utils/deployment.ts) ги усогласуваат assets, BrowserRouter basename, сите локални фотографии/fallback, favicon и SEO URLs. `./` base не е поддржан; потребна е апсолутна pathname.
 
@@ -288,9 +291,32 @@ pnpm preview --host 127.0.0.1 --port 4173
 
 Ако хостот нема indexes/fallback, треба намерна routing промена, на пример HashRouter; тој сега не е имплементиран. На вистинскиот хост тестирајте detail direct URL, refresh, photos и unknown route. SPA 404 може да има HTTP 200; вистински HTTP 404 бара server rules.
 
-Netlify root fallback е во `public/_redirects`; Vercel root rewrite е во `vercel.json`. Тоа не се FCSE правила и можеби бара адаптација. Сопствен хост може да примени соодветна Nginx `try_files` логика. Нема `.github/workflows`/GitHub Pages setup; Pages не дава произволен BrowserRouter fallback автоматски. За subdirectory, `dist/robots.txt` е template: неговиот sitemap reference треба во вистинскиот origin-root robots со помош на администратор.
+Netlify root fallback е во `public/_redirects`; Vercel root rewrite е во `vercel.json`. Тоа не се FCSE правила и можеби бара адаптација. Сопствен хост може да примени соодветна Nginx `try_files` логика. GitHub Pages deployment е во `.github/workflows/deploy-pages.yml`: генерирани route indexes и custom `404.html` овозможуваат BrowserRouter без серверски SPA rewrite. За subdirectory, `dist/robots.txt` е template: неговиот sitemap reference треба во вистинскиот origin-root robots со помош на администратор.
 
 <a id="mk-maintenance"></a>
+
+#### GitHub Pages: конкретна конфигурација
+
+Очекувана адреса: https://mtomashevski.github.io/lumora-company-website/. Таа е потврдена deployment цел, не тврдење дека објавувањето веќе е завршено.
+
+Production defaults се `VITE_BASE_PATH=/lumora-company-website/` и origin `https://mtomashevski.github.io`; развој без env override останува на `/`. Ако копирате .env.example, и dev користи зададена база. Вредностите може да се override за FCSE/друг хост; не користете Pages база таму без проверка.
+
+Workflow `.github/workflows/deploy-pages.yml` се активира на push во main и рачно преку workflow_dispatch. Користи Node 24 и pnpm од packageManager, frozen lockfile install, typecheck/lint/build, Pages artifact од dist и deploy job со pages:write/id-token:write во github-pages environment. Build output и node_modules не се commit-ираат; не е потребна gh-pages гранка или личен token. Автоматскиот GITHUB_TOKEN го користат официјалните Pages actions.
+
+Во GitHub → Settings → Pages → Build and deployment → **Source: GitHub Actions**. Не избирајте Deploy from a branch. Ако првиот workflow не успее пред да ја поставите оваа опција, пуштете го повторно од Actions → Deploy Lumora to GitHub Pages → Run workflow (main).
+
+Рутирање: build создава 11 познати route index.html датотеки. GitHub Pages ги сервира директно, со нормален trailing-slash redirect за директориум. Custom 404.html ја вчитува истата React апликација со absolute base-aware assets и noindex; непознат URL го задржува својот pathname и HTTP 404. Нема hash URL или redirect encoding script. Генерирана .nojekyll датотека е вклучена само во build artifact. На друг хост може да се користи fallback или истата custom 404 политика.
+
+За локална production проверка: pnpm build, потоа pnpm preview и отворете /lumora-company-website/. За строг Pages модел, користете pnpm preview:pages (порт 4180); тој нема SPA rewrite. Целосниот Pages suite го стартува серверот автоматски:
+
+```powershell
+$env:TEST_PAGES_MODE = '1'
+$env:TEST_BASE_PATH = '/lumora-company-website/'
+$env:TEST_BASE_URL = 'http://127.0.0.1:4180'
+pnpm test
+```
+
+За root dev тестирање не поставувајте TEST_PAGES_MODE и користете TEST_BASE_PATH=/; за preview користете ја production база. Pages-only тестот е прескокнат надвор од Pages режим. Browser links, query предизборот, EN/MK и localStorage се зачувани.
 
 ### 13. Одржување и тестирање
 
@@ -308,24 +334,25 @@ Netlify root fallback е во `public/_redirects`; Vercel root rewrite е во `
 
 **Нова тура:** (1) проверете услуга/booking URL/asset права; (2) додадете фотографии во experience папка; (3) внесете цел `Experience` со уникатни id/slug, EN/MK, locations/categories, duration, hero/gallery, featured и sourceChecked; (4) додајте само познати optional детали и информативна price; (5) ажурирајте типови/map/преводи за нови locations/categories; (6) проверете cards, filters, details, inquiry и дестинации на EN/MK; (7) ажурирајте документација/test очекувања; (8) typecheck/lint/build/browser QA. SEO route листата автоматски го вклучува записот.
 
-[tests/site.spec.ts](tests/site.spec.ts) има 24 browser тестови: routes и пет details на EN/MK/пет ширини; overflow/console; filters; persistence; mobile keyboard; local inquiry/copy без POST; real booking href/rel; legal data; images/logo/favicon 3:2; invalid route/fallback/blocked storage. Test runner не стартува сервер автоматски.
+[tests/site.spec.ts](tests/site.spec.ts) има 25 browser тестови: routes и пет details на EN/MK/пет ширини; overflow/console; filters; persistence; mobile keyboard; local inquiry/copy без POST; real booking href/rel; legal data; images/logo/favicon 3:2; invalid route/fallback/blocked storage. Test runner не стартува сервер автоматски.
 
 За dev: терминал 1 `pnpm dev`, терминал 2 `pnpm test`. За production: прво build/preview, потоа:
 
 ```powershell
 # PowerShell
 $env:TEST_BASE_URL = 'http://127.0.0.1:4173'
+$env:TEST_BASE_PATH = '/lumora-company-website/'
 pnpm test
 ```
 
 ```sh
 # POSIX shell
-TEST_BASE_URL=http://127.0.0.1:4173 pnpm test
+TEST_BASE_URL=http://127.0.0.1:4173 TEST_BASE_PATH=/lumora-company-website/ pnpm test
 ```
 
-Default `msedge` бара инсталиран Edge. Алтернатива: `pnpm exec playwright install chromium`, па env `PLAYWRIGHT_CHANNEL=chromium`. Download бара мрежа. Committed тестовите очекуваат root preview: само менување TEST_BASE_URL не ги адаптира absolute goto/href проверки за subdirectory. Вложена база беше проверена со одделен локален QA script, не committed пренослив deployment suite.
+Default `msedge` бара инсталиран Edge. Алтернатива: `pnpm exec playwright install chromium`, па env `PLAYWRIGHT_CHANNEL=chromium`. Download бара мрежа. Тестовите поддржуваат `TEST_BASE_PATH`. Pages режимот автоматски стартува committed static QA server, со directory indexes и вистински HTTP 404, без SPA rewrite; ги проверува директните URL и refresh.
 
-Автоматизиран browser audit помина 24/24. Визуелната проверка беше одделна: доставени фотографии, desktop/mobile снимки, crops, официјално лого, MK wrapping. Документациската задача повторно проверува typecheck/lint/build и снима нови screenshot примери. Пред предавање, рачно проверете надворешни профили, keyboard flow, фактички услови и вистински FCSE refresh. Не се тврди независна безбедносна проверка, тестирање под оптоварување или правна ревизија.
+Автоматизиран browser audit помина 25/25. Визуелната проверка беше одделна: доставени фотографии, desktop/mobile снимки, crops, официјално лого, MK wrapping. Документациската задача повторно проверува typecheck/lint/build и снима нови screenshot примери. Пред предавање, рачно проверете надворешни профили, keyboard flow, фактички услови и вистински FCSE refresh. Не се тврди независна безбедносна проверка, тестирање под оптоварување или правна ревизија.
 
 ### 14. AI-поддршка, ограничувања и иднина
 
@@ -333,7 +360,7 @@ AI алатки, вклучувајќи Codex, помогнаа со импле�
 
 Автоматизираните проверки се извршени со алатки; студентите треба да ја разберат финалната структура, да ја потврдат factual/academic содржината и да направат финален review. Не тврдејте дека секој студент лично го напишал/тестирал секој дел ако тоа не е точно. AI не ја заменува одговорноста за точност.
 
-Нема backend delivery, database, auth, CMS, direct payment, live availability или social API. Содржината во кодот бара повторен build; body е client-rendered, јазиците делат URL, production host не е потврден, а boundary recovery има документиран base edge. Ова се граници на презентацискиот опсег, не измислени неуспеси.
+Нема backend delivery, database, auth, CMS, direct payment, live availability или social API. Содржината во кодот бара повторен build; body е client-rendered, јазиците делат URL, FCSE host не е потврден, а реалното јавно објавување се потврдува преку GitHub Actions. Ова се граници на презентацискиот опсег, не измислени неуспеси.
 
 Идни, **неимплементирани** подобрувања: inquiry backend/transactional email; повеќе реални активности/јазици; CMS ако каталогот порасне; language SEO/prerender; CI/deployment pipeline; analytics само со review на consent/privacy. Автоматски тестови веќе постојат и може да се прошируваат. Direct booking има смисла само ако бизнисот го побара.
 
@@ -427,7 +454,7 @@ AI алатки, вклучувајќи Codex, помогнаа со импле�
 | Како се додава тура?             | Нов запис со EN/MK, фотографии и резервациска врска, без нова компонента за детали.                                      |
 | Како се додава јазик?            | Типови, речник, provider, селектор, метаподатоци и сите деловни преводи.                                                 |
 | Каков SEO постои?                | Метаподатоци за рути, читливи URL, robots/favicon; со домен sitemap/canonical/schema; содржината се рендерира клиентски. |
-| Како е проверен проектот?        | Typecheck/lint/build, 24 Playwright тестови, visual/nested-base QA.                                                      |
+| Како е проверен проектот?        | Typecheck/lint/build, 25 Playwright тестови, visual/nested-base QA.                                                      |
 | Што прво би подобриле?           | Реална испорака на прашања и потврден хостинг, потоа деловна содржина и SEO.                                             |
 | Користевте AI? За што?           | Да, Codex за код, дебагирање, рефакторирање, проверки и документација.                                                   |
 | Што направија студентите?        | Избор на бизнис, опсег и ресурси, преглед, корекции и одлуки; наведете ги вистинските лични придонеси.                   |
@@ -462,7 +489,7 @@ Complete documentation for a university Business Practice project: a bilingual p
 
 | Resource     | Address / status                                                                              |
 | ------------ | --------------------------------------------------------------------------------------------- |
-| Live website | **[Complete after publishing]**                                                               |
+| Live website | [Expected GitHub Pages URL](https://mtomashevski.github.io/lumora-company-website/)           |
 | Repository   | [mtomashevski/lumora-company-website](https://github.com/mtomashevski/lumora-company-website) |
 | Instagram    | [@lumoraadventures](https://www.instagram.com/lumoraadventures/)                              |
 | GetYourGuide | [Lumora Company](https://www.getyourguide.com/lumora-company-s800323/)                        |
@@ -593,7 +620,9 @@ public/
     hero/, destinations/, about/  Older inactive stock assets
     fallback.svg / CREDITS.md
   robots.txt / _redirects
-scripts/generate-seo.mjs   Build metadata
+scripts/generate-seo.mjs   Build metadata and 404.html
+scripts/serve-pages.mjs    Static Pages QA server
+.github/workflows/        deploy-pages.yml
 tests/site.spec.ts         Browser tests
 docs/screenshots/          README screenshots
 vite.config.ts / tsconfig*.json / eslint.config.js
@@ -690,11 +719,11 @@ Accessibility considerations include semantic HTML, one h1, a skip link, labels/
 
 [usePageMeta.ts](src/hooks/usePageMeta.ts) updates titles/descriptions, Open Graph, language and robots metadata following navigation/language changes. With a domain, it adds canonical/OG URLs/images. Clean slugs, headings and alt text make travel information understandable to users and search engines.
 
-[generate-seo.mjs](scripts/generate-seo.mjs) generates English HTML metadata for six main routes plus five tours, currently 11. The body remains client-rendered, not full SSR. Only with `VITE_SITE_URL` does it generate sitemap, canonical/OG URLs and TravelAgency JSON-LD using real name/address/identifier/social links, without invented reviews. Robots and favicon exist without a domain. Separate language URLs/hreflang are absent.
+[generate-seo.mjs](scripts/generate-seo.mjs) generates English HTML metadata for six main routes plus five tours, currently 11. The body remains client-rendered, not full SSR. Using the production origin (GitHub Pages default or a `VITE_SITE_URL` override), it generates sitemap, canonical/OG URLs and TravelAgency JSON-LD using real name/address/identifier/social links, without invented reviews. Robots and favicon exist without a domain. Separate language URLs/hreflang are absent.
 
 Privacy describes local inquiry preparation, language-only localStorage, local photographs and external services. There are no analytics/tracking cookies, so no fake consent banner. Hosting may produce access logs; external platforms have their own policies. Basic legal text is not professional legal advice.
 
-Handled states include invalid route/slug, empty filters, image fallback, missing optional channels, blocked storage, invalid form, future request failure/timeout and React rendering errors through `ErrorBoundary`. It does not catch all asynchronous/browser errors. One small known deployment edge: the boundary recovery link uses `href="/"`, so a subdirectory installation would return to the host root. This is documented without changing code in this task.
+Handled states include invalid route/slug, empty filters, image fallback, missing optional channels, blocked storage, invalid form, future request failure/timeout and React rendering errors through `ErrorBoundary`. It does not catch all asynchronous/browser errors. The ErrorBoundary recovery link uses the application base and therefore returns to Lumora on subdirectory installations too.
 
 <a id="en-deployment"></a>
 
@@ -711,15 +740,16 @@ pnpm dev
 
 Default development URL is `http://localhost:5173`; Vite reports the actual port if occupied. Copy `.env.example` to `.env.local` when settings need changing. Defaults are sufficient for local root hosting.
 
-| Command          | Effect                                                           |
-| ---------------- | ---------------------------------------------------------------- |
-| `pnpm dev`       | Vite development server                                          |
-| `pnpm typecheck` | `tsc -b --pretty false`                                          |
-| `pnpm lint`      | `eslint .`                                                       |
-| `pnpm build`     | `tsc -b`, Vite build, Node SEO script using TypeScript stripping |
-| `pnpm preview`   | Local serving of `dist/`, default port 4173                      |
-| `pnpm test`      | Playwright, with a server started beforehand                     |
-| `pnpm format`    | Prettier for src/Vite/index; README is outside this command      |
+| Command              | Effect                                                             |
+| -------------------- | ------------------------------------------------------------------ |
+| `pnpm dev`           | Vite development server                                            |
+| `pnpm typecheck`     | `tsc -b --pretty false`                                            |
+| `pnpm lint`          | `eslint .`                                                         |
+| `pnpm build`         | `tsc -b`, Vite build, Node SEO script using TypeScript stripping   |
+| `pnpm preview:pages` | Strict static Pages QA server on port 4180, without an SPA rewrite |
+| `pnpm preview`       | Local serving of `dist/`, default port 4173                        |
+| `pnpm test`          | Playwright, with a server started beforehand                       |
+| `pnpm format`        | Prettier for src/Vite/index; README is outside this command        |
 
 ```sh
 pnpm typecheck
@@ -730,11 +760,11 @@ pnpm preview --host 127.0.0.1 --port 4173
 
 `dist/` contains JS/CSS, public assets and route HTML. Preview is not public production hosting. Build-environment changes require rebuilding.
 
-| Setting                 | Meaning                                                                                |
-| ----------------------- | -------------------------------------------------------------------------------------- |
-| `VITE_SITE_URL`         | Verified HTTP(S) origin without pathname/credentials/trailing slash; empty until known |
-| `VITE_BASE_PATH`        | Exact public pathname with leading/trailing `/`, default `/`                           |
-| `VITE_INQUIRY_ENDPOINT` | Optional public POST endpoint, currently empty; not a secret                           |
+| Setting                 | Meaning                                                                                                         |
+| ----------------------- | --------------------------------------------------------------------------------------------------------------- |
+| `VITE_SITE_URL`         | HTTP(S) origin without pathname/credentials/trailing slash; production default `https://mtomashevski.github.io` |
+| `VITE_BASE_PATH`        | Exact public pathname; production default `/lumora-company-website/`, development default `/`                   |
+| `VITE_INQUIRY_ENDPOINT` | Optional public POST endpoint, currently empty; not a secret                                                    |
 
 **FCSE/FINKI:** obtain the exact public origin, complete account/project pathname, directory-index behavior and SPA fallback availability. No URL or completed FCSE workflow is assumed. Vite base and [deployment.ts](src/utils/deployment.ts) align assets, BrowserRouter basename, every local image/fallback, favicon and SEO URLs. A relative `./` base is unsupported; the absolute pathname is required.
 
@@ -742,9 +772,32 @@ Set `.env.local`, build, and upload the **contents** of `dist/` into the mounted
 
 Without indexes/fallback, a deliberate routing change such as HashRouter is needed; it is not currently implemented. On the actual host, test direct detail URLs, refresh, photographs and unknown routes. The SPA's visual 404 may return HTTP 200; true HTTP 404 requires server rules.
 
-Netlify's root fallback is in `public/_redirects`; Vercel's root rewrite is in `vercel.json`. These are not FCSE rules and may need adaptation. A custom host can use appropriately scoped Nginx `try_files` logic. There is no `.github/workflows`/GitHub Pages setup; Pages does not automatically provide arbitrary BrowserRouter fallback. For a subdirectory, `dist/robots.txt` is a template: the administrator must place its sitemap reference in the actual origin-root robots file.
+Netlify's root fallback is in `public/_redirects`; Vercel's root rewrite is in `vercel.json`. These are not FCSE rules and may need adaptation. A custom host can use appropriately scoped Nginx `try_files` logic. GitHub Pages deployment is configured in `.github/workflows/deploy-pages.yml`: generated route indexes and custom `404.html` support BrowserRouter without a server SPA rewrite. For a subdirectory, `dist/robots.txt` is a template: the administrator must place its sitemap reference in the actual origin-root robots file.
 
 <a id="en-maintenance"></a>
+
+#### GitHub Pages: concrete configuration
+
+Expected URL: https://mtomashevski.github.io/lumora-company-website/. This is the confirmed deployment target, not a claim that deployment has already completed.
+
+Production defaults are `VITE_BASE_PATH=/lumora-company-website/` and origin `https://mtomashevski.github.io`; development without an environment override stays at `/`. Copying .env.example also sets the development base. Override these for FCSE/other hosting; do not assume the Pages path applies there.
+
+Workflow `.github/workflows/deploy-pages.yml` runs on pushes to main and manual workflow_dispatch. It uses Node 24, the packageManager-pinned pnpm, frozen-lockfile installation, typecheck/lint/build, a Pages artifact from dist, and a deploy job with pages:write/id-token:write in the github-pages environment. Build output and node_modules are not committed; no gh-pages branch or personal token is needed. Official Pages actions use the automatic GITHUB_TOKEN.
+
+On GitHub → Settings → Pages → Build and deployment, set **Source: GitHub Actions**. Do not select Deploy from a branch. If the first workflow fails before selecting this setting, rerun it through Actions → Deploy Lumora to GitHub Pages → Run workflow (main).
+
+Routing: the build creates 11 known route index.html files. Pages serves them directly, with normal directory trailing-slash redirects. Custom 404.html loads the same React app using absolute base-aware assets and noindex; unknown URLs retain their pathname and HTTP 404. No hash URLs or redirect-encoding script are used. Generated .nojekyll exists only in the build artifact. Other hosts can use a fallback or the same custom-404 policy.
+
+For local production verification: pnpm build, then pnpm preview and open /lumora-company-website/. For a strict Pages model, use pnpm preview:pages (port 4180), with no SPA rewrite. The complete Pages suite starts that server automatically:
+
+```powershell
+$env:TEST_PAGES_MODE = '1'
+$env:TEST_BASE_PATH = '/lumora-company-website/'
+$env:TEST_BASE_URL = 'http://127.0.0.1:4180'
+pnpm test
+```
+
+For root development tests, leave TEST_PAGES_MODE unset and use TEST_BASE_PATH=/; for preview, use the production base. The Pages-only test is skipped outside Pages mode. Browser links, query preselection, EN/MK and localStorage behavior are preserved.
 
 ### 13. Maintenance and verification
 
@@ -762,24 +815,25 @@ Netlify's root fallback is in `public/_redirects`; Vercel's root rewrite is in `
 
 **New tour:** (1) verify the service/booking URL/asset rights; (2) add photographs to an experience folder; (3) add a full `Experience` with unique id/slug, EN/MK text, locations/categories, duration, hero/gallery, featured and sourceChecked; (4) add only known optional details and informational pricing; (5) update types/maps/translations for new locations/categories; (6) check cards, filters, details, inquiries and destinations in EN/MK; (7) update documentation/test expectations; (8) typecheck/lint/build/browser QA. The SEO route list automatically includes the record.
 
-[tests/site.spec.ts](tests/site.spec.ts) contains 24 browser tests: routes and five details in EN/MK at five widths; overflow/console; filters; persistence; mobile keyboard navigation; local inquiry/copy without POST; actual booking href/rel; legal data; images/logo/favicon 3:2; invalid routes/fallback/blocked storage. The test runner does not start a server automatically.
+[tests/site.spec.ts](tests/site.spec.ts) contains 25 browser tests: routes and five details in EN/MK at five widths; overflow/console; filters; persistence; mobile keyboard navigation; local inquiry/copy without POST; actual booking href/rel; legal data; images/logo/favicon 3:2; invalid routes/fallback/blocked storage. The test runner does not start a server automatically.
 
 Development testing: terminal 1 `pnpm dev`, terminal 2 `pnpm test`. Production testing: build/start preview first, then:
 
 ```powershell
 # PowerShell
 $env:TEST_BASE_URL = 'http://127.0.0.1:4173'
+$env:TEST_BASE_PATH = '/lumora-company-website/'
 pnpm test
 ```
 
 ```sh
 # POSIX shell
-TEST_BASE_URL=http://127.0.0.1:4173 pnpm test
+TEST_BASE_URL=http://127.0.0.1:4173 TEST_BASE_PATH=/lumora-company-website/ pnpm test
 ```
 
-Default channel `msedge` requires installed Edge. Alternatively, run `pnpm exec playwright install chromium` and set environment variable `PLAYWRIGHT_CHANNEL=chromium`. Browser download requires network access. Committed tests expect root preview: changing only TEST_BASE_URL does not adapt absolute goto/href checks for subdirectories. A nested base was checked with a separate local QA script, not a committed portable deployment suite.
+Default channel `msedge` requires installed Edge. Alternatively, run `pnpm exec playwright install chromium` and set environment variable `PLAYWRIGHT_CHANNEL=chromium`. Browser download requires network access. Tests support `TEST_BASE_PATH`. Pages mode automatically starts the committed static QA server with directory indexes and real HTTP 404, without an SPA rewrite, and verifies direct URLs and refresh.
 
-The automated browser audit passed 24/24. Visual review was separate: supplied photography, desktop/mobile screenshots, crops, official logo and Macedonian wrapping. This documentation task repeats typecheck/lint/build and captures fresh examples. Before submission, manually check external profiles, keyboard flow, factual conditions and actual FCSE refresh behavior. No independent security/load/legal audit is claimed.
+The automated browser audit passed 25/25. Visual review was separate: supplied photography, desktop/mobile screenshots, crops, official logo and Macedonian wrapping. This documentation task repeats typecheck/lint/build and captures fresh examples. Before submission, manually check external profiles, keyboard flow, factual conditions and actual FCSE refresh behavior. No independent security/load/legal audit is claimed.
 
 ### 14. AI assistance, limitations and future work
 
@@ -787,7 +841,7 @@ AI tools, including Codex, assisted with implementation, code generation, debugg
 
 Automated checks were performed through tools; students should understand the final structure, confirm factual/academic content and conduct the final review. Do not claim every student personally wrote or tested every part unless true. AI does not replace responsibility for accuracy.
 
-There is no backend delivery, database, authentication, CMS, direct payment, live availability or social API. Source content requires rebuilding; the body is client-rendered, languages share URLs, the production host is unconfirmed, and boundary recovery has the documented base-path edge. These are boundaries of the presentation scope rather than invented failures.
+There is no backend delivery, database, authentication, CMS, direct payment, live availability or social API. Source content requires rebuilding; the body is client-rendered, languages share URLs, FCSE hosting is unconfirmed, and actual public deployment is confirmed through GitHub Actions. These are boundaries of the presentation scope rather than invented failures.
 
 Future, **unimplemented** improvements include inquiry backend/transactional email, more real tours/languages, a CMS if the catalog grows, language SEO/prerendering, CI/deployment pipelines, and analytics only after consent/privacy review. Automated tests already exist and can be expanded. Direct booking is appropriate only if required by the business.
 
@@ -881,7 +935,7 @@ Trace `Experience` → card → slug → detail. Explain query filters, `t` vers
 | How would you add a tour?            | New data + EN/MK/images/booking without a new detail component.                                           |
 | How would you add a language?        | Types/dictionary/provider/selector/metadata and all business translations.                                |
 | What SEO exists?                     | Route metadata/clean URLs/robots/favicon, domain-enabled sitemap/canonical/schema; client-rendered body.  |
-| How was it verified?                 | Typecheck/lint/build, 24 Playwright tests, visual/nested-base QA.                                         |
+| How was it verified?                 | Typecheck/lint/build, 25 Playwright tests, visual/nested-base QA.                                         |
 | What would you improve first?        | Real inquiry delivery and confirmed hosting, then business content/SEO.                                   |
 | Did you use AI? What for?            | Yes, Codex for code/debugging/refactoring/checks/documentation.                                           |
 | What did the students do?            | Business selection, scope/resources, review/corrections/decisions; state actual individual contributions. |

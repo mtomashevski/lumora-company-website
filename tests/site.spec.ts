@@ -4,6 +4,11 @@ import { experiences, destinations } from '../src/data/experiences';
 import { company } from '../src/data/company';
 import { en } from '../src/i18n/en';
 import { mk } from '../src/i18n/mk';
+const testBase = process.env.TEST_BASE_PATH || '/';
+const appPath = (route: string) => testBase + route.replace(/^\//, '');
+async function visit(page: Page, route: string) {
+  return page.goto(appPath(route));
+}
 const routes = [
   '/',
   '/experiences',
@@ -22,19 +27,41 @@ async function switchToMk(page: Page) {
   if (await page.locator('#menu-toggle').isVisible()) await page.keyboard.press('Escape');
   await expect(page.locator('html')).toHaveAttribute('lang', 'mk');
 }
+test('Pages directory routes refresh successfully and unknown paths retain HTTP 404', async ({
+  page,
+}) => {
+  test.skip(process.env.TEST_PAGES_MODE !== '1', 'Requires the strict Pages static preview');
+  for (const route of routes) {
+    const expected = route.includes('missing') ? 404 : 200;
+    expect((await visit(page, route))?.status(), route).toBe(expected);
+    await expect(page.locator('h1')).toBeVisible();
+    expect((await page.reload())?.status(), route).toBe(expected);
+    await expect(page.locator('h1')).toBeVisible();
+    if (expected === 404) await expect(page.locator('.not-found')).toBeVisible();
+  }
+  await visit(page, '/contact?experience=' + experiences[0].slug);
+  await expect(page.locator('select[name="experience"]')).toHaveValue(experiences[0].slug);
+  await page.reload();
+  await expect(page.locator('select[name="experience"]')).toHaveValue(experiences[0].slug);
+});
 for (const language of ['en', 'mk'] as const) {
   for (const width of [375, 430, 768, 1024, 1440]) {
     test(`Every route is responsive and translated: ${language}, ${width}px`, async ({ page }) => {
       await page.setViewportSize({ width, height: 900 });
-      await page.goto('/');
+      await visit(page, '/');
       if (language === 'mk') await switchToMk(page);
       const errors: string[] = [];
       page.on('pageerror', (error) => errors.push(error.message));
       page.on('console', (message) => {
-        if (message.type() === 'error') errors.push(message.text());
+        if (message.type() === 'error') {
+          const expectedDocument404 = /\/(?:missing|experiences\/missing-trip)$/.test(
+            new URL(message.location().url || 'http://localhost').pathname,
+          );
+          if (!expectedDocument404) errors.push(message.text());
+        }
       });
       for (const route of routes) {
-        await page.goto(route);
+        await visit(page, route);
         await expect(page.locator('h1')).toBeVisible();
         await expect(page.locator('h1')).toHaveCount(1);
         await expect(page.locator('html')).toHaveAttribute('lang', language);
@@ -50,14 +77,14 @@ for (const language of ['en', 'mk'] as const) {
         if (language === 'mk') expect(await page.locator('h1').innerText()).toMatch(/[А-Яа-я]/);
         for (const img of await page.locator('img').all()) {
           expect(await img.getAttribute('alt')).toBeTruthy();
-          expect(await img.getAttribute('src')).toMatch(/^\/images\//);
+          expect(await img.getAttribute('src')).toContain(appPath('/images/'));
         }
       }
       expect(errors).toEqual([]);
     });
   }
   test(`Filters use real locations and categories in ${language}`, async ({ page }) => {
-    await page.goto('/experiences');
+    await visit(page, '/experiences');
     if (language === 'mk') await switchToMk(page);
     await expect(page.locator('.experience-card')).toHaveCount(5);
     await page.locator('select[aria-labelledby="destination-filter-label"]').selectOption('bitola');
@@ -73,7 +100,7 @@ for (const language of ['en', 'mk'] as const) {
       .getByRole('button', { name: (language === 'en' ? en : mk)['catalog.clear'] })
       .click();
     await expect(page.locator('.experience-card')).toHaveCount(5);
-    await page.goto('/experiences?category=multi-day');
+    await visit(page, '/experiences?category=multi-day');
     await expect(page.locator('.experience-card')).toHaveCount(2);
   });
   test(`Inquiry validation and honest local preparation in ${language}`, async ({
@@ -85,7 +112,7 @@ for (const language of ['en', 'mk'] as const) {
     page.on('request', (request) => {
       if (request.method() === 'POST') posts++;
     });
-    await page.goto('/contact?experience=' + experiences[0].slug);
+    await visit(page, '/contact?experience=' + experiences[0].slug);
     if (language === 'mk') await switchToMk(page);
     const dictionary = language === 'en' ? en : mk;
     await expect(page.locator('select[name="experience"]')).toHaveValue(experiences[0].slug);
@@ -129,7 +156,7 @@ for (const language of ['en', 'mk'] as const) {
 test('Language switches immediately, preserves route/filter/form, and survives refresh', async ({
   page,
 }) => {
-  await page.goto('/experiences?destination=matka');
+  await visit(page, '/experiences?destination=matka');
   const original = await page.locator('.experience-card').count();
   await switchToMk(page);
   await expect(page).toHaveURL(/destination=matka/);
@@ -139,7 +166,7 @@ test('Language switches immediately, preserves route/filter/form, and survives r
   await expect(page.locator('h1')).toHaveText(mk['catalog.title']);
   await expect(page.locator('html')).toHaveAttribute('lang', 'mk');
   expect(await page.evaluate(() => localStorage.getItem('lumora-language'))).toBe('mk');
-  await page.goto('/contact');
+  await visit(page, '/contact');
   await page.locator('#inquiry-name').fill('Ана Тест');
   await page.getByRole('button', { name: 'English', exact: true }).click();
   await expect(page.locator('#inquiry-name')).toHaveValue('Ана Тест');
@@ -147,7 +174,7 @@ test('Language switches immediately, preserves route/filter/form, and survives r
 });
 test('Mobile navigation and language selector are keyboard accessible', async ({ page }) => {
   await page.setViewportSize({ width: 375, height: 812 });
-  await page.goto('/');
+  await visit(page, '/');
   await page.keyboard.press('Tab');
   await expect(page.getByRole('link', { name: en['nav.skip'] })).toBeFocused();
   await page.locator('#menu-toggle').click();
@@ -168,7 +195,7 @@ test('Mobile navigation and language selector are keyboard accessible', async ({
 });
 test('Each activity links to its verified GetYourGuide listing and inquiry', async ({ page }) => {
   for (const experience of experiences) {
-    await page.goto('/experiences/' + experience.slug);
+    await visit(page, '/experiences/' + experience.slug);
     const booking = page
       .locator('.inquiry-panel')
       .getByRole('link', { name: /Book on GetYourGuide/ });
@@ -186,7 +213,7 @@ test('All displayed local assets load, including galleries and official logo', a
     '/destinations',
     ...experiences.map((e) => '/experiences/' + e.slug),
   ]) {
-    await page.goto(route);
+    await visit(page, route);
     for (const img of await page.locator('img').all()) {
       await img.scrollIntoViewIfNeeded();
       await expect
@@ -194,18 +221,18 @@ test('All displayed local assets load, including galleries and official logo', a
           img.evaluate((element: HTMLImageElement) => element.complete && element.naturalWidth > 0),
         )
         .toBe(true);
-      expect(await img.getAttribute('src')).not.toBe('/images/fallback.svg');
+      expect(await img.getAttribute('src')).not.toBe(appPath('/images/fallback.svg'));
     }
   }
-  await expect(page.locator('header .official-logo')).toHaveAttribute('src', company.logo);
+  await expect(page.locator('header .official-logo')).toHaveAttribute('src', appPath(company.logo));
 });
 test('Public company/legal information and safe social links are correct', async ({ page }) => {
-  await page.goto('/privacy');
+  await visit(page, '/privacy');
   await expect(page.locator('.company-information')).toContainText(company.registrationNumber);
   for (const director of company.directors)
     await expect(page.locator('.company-information')).toContainText(director.name);
   await expect(page.locator('address')).toContainText(company.registeredAddress.street);
-  await page.goto('/contact');
+  await visit(page, '/contact');
   await expect(page.locator('.contact-details')).toContainText(company.instagramHandle);
   await expect(page.locator('.contact-details a[href^="mailto:"]')).toHaveCount(0);
   await expect(page.locator('.contact-details a[href^="tel:"]')).toHaveCount(0);
@@ -219,9 +246,9 @@ test('Final official PNG logo and favicon preserve aspect ratio at every breakpo
 }) => {
   for (const width of [375, 430, 768, 1024, 1440]) {
     await page.setViewportSize({ width, height: 900 });
-    await page.goto('/');
+    await visit(page, '/');
     for (const logo of await page.locator('.official-logo').all()) {
-      await expect(logo).toHaveAttribute('src', '/images/brand/lumora-logo.png');
+      await expect(logo).toHaveAttribute('src', appPath('/images/brand/lumora-logo.png'));
       await expect
         .poll(() =>
           logo.evaluate((img: HTMLImageElement) => img.complete && img.naturalWidth === 1536),
@@ -233,17 +260,17 @@ test('Final official PNG logo and favicon preserve aspect ratio at every breakpo
     }
     await expect(page.locator('link[rel="icon"]')).toHaveAttribute(
       'href',
-      '/images/brand/lumora-logo.png',
+      appPath('/images/brand/lumora-logo.png'),
     );
   }
 });
 test('Invalid routes and image failures have useful fallbacks', async ({ page }) => {
-  await page.goto('/experiences/not-a-tour');
+  await visit(page, '/experiences/not-a-tour');
   await expect(page.locator('.not-found')).toBeVisible();
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex, follow');
   await page.route('**/macedonian-heritage/image2.avif', (route) => route.abort());
-  await page.goto('/');
-  await expect(page.locator('.hero > img')).toHaveAttribute('src', '/images/fallback.svg');
+  await visit(page, '/');
+  await expect(page.locator('.hero > img')).toHaveAttribute('src', appPath('/images/fallback.svg'));
   await expect
     .poll(() =>
       page
@@ -253,14 +280,14 @@ test('Invalid routes and image failures have useful fallbacks', async ({ page })
     .toBe(true);
 });
 test('Destinations derive from real activity locations', async ({ page }) => {
-  await page.goto('/destinations');
+  await visit(page, '/destinations');
   await expect(page.locator('.destination-tile')).toHaveCount(destinations.length);
-  await page.locator('a[href="/experiences?destination=debar"]').click();
+  await page.locator('a[href="' + appPath('/experiences?destination=debar') + '"]').click();
   await expect(page.locator('.experience-card')).toHaveCount(1);
 });
 test('Long Macedonian card content stays within a phone viewport', async ({ page }) => {
   await page.setViewportSize({ width: 375, height: 812 });
-  await page.goto('/experiences');
+  await visit(page, '/experiences');
   await switchToMk(page);
   await page
     .locator('.card-title a')
@@ -283,7 +310,7 @@ test('The site still loads if preference storage is blocked', async ({ page }) =
       throw new Error('blocked');
     };
   });
-  await page.goto('/');
+  await visit(page, '/');
   await expect(page.locator('h1')).toContainText(en['home.titleFirst']);
   await switchToMk(page);
   await expect(page.locator('h1')).toContainText(mk['home.titleFirst']);

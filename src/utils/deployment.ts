@@ -1,4 +1,6 @@
 /// <reference types="vite/client" />
+export const githubPagesBasePath = '/lumora-company-website/';
+export const githubPagesOrigin = 'https://mtomashevski.github.io';
 // An explicit absolute pathname keeps assets and router links consistent on static hosts.
 export function normalizeBasePath(value = '/') {
   if (
