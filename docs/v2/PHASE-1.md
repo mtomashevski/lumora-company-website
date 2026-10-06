@@ -2,6 +2,8 @@
 
 Scope: approved architecture/repository/environment preparation only. No Phase 2 CMS migration, database, authentication, booking, PayPal integration or email service has been implemented. Existing public content/assets and production Pages workflow are preserved. Main and origin/main remain at `2500bceec670a92ee2336f5fdaf155f6a96bb025`.
 
+Result: **PASS** for the Phase 1 technical foundation. Implementation commit `872cace` passed [the actual GitHub-hosted CI run](https://github.com/mtomashevski/lumora-company-website/actions/runs/37530762789), including all V1 regressions. The live V1 URL returned HTTP 200 and its latest Pages deployment still referenced the unchanged baseline. A real Vercel-hosted preview remains intentionally unprovisioned.
+
 ## What was validated
 
 The isolated `v2/` app proves React Router framework SSR with Vite, hydration, reusable V1 visual components, server-only modules, locale route parameters, server metadata and a resource route. The entry page chooses stored locale only after hydration; explicit locale URLs always win. HTML rendered without JavaScript contains real EN/MK tour content and the logo. IT/TR routes show English with an explicit fallback notice and `main lang="en"`; this is route feasibility, not completed four-language localization.
@@ -107,7 +109,7 @@ Vercel Hobby is restricted to personal, non-commercial use. Do not assume real-b
 
 ## Remaining risks and next gate
 
-No architectural blocker was found in the tested pinned stack. Hosted Vercel behavior and Linux-hosted CI execution remain evidence to obtain from actual platform runs. Current framework warnings need upgrade planning. Shared LanguageProvider still contains the original EN/MK UI behavior; the spike wraps locale routing, not a complete localization migration. CMS content, four reviewed languages, auth, bookings, real inventory and payment reconciliation are unimplemented future phases.
+No architectural blocker was found in the tested pinned stack. Linux-hosted CI passed; hosted Vercel behavior remains to validate in a separately approved preview. Current framework warnings need upgrade planning. Shared LanguageProvider still contains the original EN/MK UI behavior; the spike wraps locale routing, not a complete localization migration. CMS content, four reviewed languages, auth, bookings, real inventory and payment reconciliation are unimplemented future phases.
 
 Phase 2 recommendation: only after separate approval, create the owner-owned Sanity development project/dataset, define content schemas and draft-preview security, then repeatably import the five tours/assets with stable IDs/slugs. Preserve original source, review copy/rights and test draft/public visibility and V1 parity. Request exact Sanity configuration then; do not start database/payments or invent translations as part of that migration.
 

@@ -36,6 +36,6 @@ Public: published tour/destination/company content, approved display prices, loc
 
 Unauthorized staff/customer requests, cross-reservation access, editable-role spoofing, invalid/oversized input, CSRF/session expiry, RLS/grants bypass, concurrency for final seats, late/duplicate/out-of-order provider events, capture timeout recovery, email retries/bounces, draft/PII cache leaks, malicious content/uploads and dependency/secret scans. WCAG checks and usable safe errors must accompany these controls.
 
-Residual Phase 1 risk: the spike uses only public migration data and no authenticated APIs, so it cannot establish production auth/payment security. CI hosted execution and Vercel platform behavior require their actual environment checks. Owner policy, inventory allocation, merchant eligibility and backup budget remain decisions, not implemented controls.
+Residual Phase 1 risk: the spike uses only public migration data and no authenticated APIs, so it cannot establish production auth/payment security. GitHub-hosted CI passed; Vercel platform behavior still requires a separately approved hosted preview. Owner policy, inventory allocation, merchant eligibility and backup budget remain decisions, not implemented controls.
 
 Reference: [OWASP API object authorization](https://api-security.owasp.org/editions/2023/en/0xa1-broken-object-level-authorization/), [Supabase key/RLS boundaries](https://supabase.com/docs/guides/database/secure-data).
