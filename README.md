@@ -1,5 +1,7 @@
 # Lumora Company Website
 
+V2 development: [approved architecture](docs/V2-ARCHITECTURE.md) and [Phase 1 technical foundation](docs/v2/PHASE-1.md). V1 remains the deployed website on `main`; the isolated SSR spike is not a replacement production site.
+
 <img src="public/images/brand/lumora-logo.png" alt="Официјално лого на Lumora Company / Official Lumora Company logo" width="180">
 
 ## Македонски
@@ -108,7 +110,7 @@ Home ја претставува компанијата и примарниот 
 
 React го поедноставува повторувањето; TypeScript го документира заедничкиот модел; Vite го намалува setup товарот. Клиентското рутирање овозможува навигација без целосно повторно вчитување, со услов хостот да обработува директни URL/refresh барања. Тоа не е SSR.
 
-`tsconfig.json` поврзува app (`src`/DOM) и node (`vite.config.ts`) конфигурации. Користат ES2023, `noEmit` и проверки за неискористени вредности. `strict: true` не е експлицитно вклучено. `tsc -b` проверува типови; Vite создава JavaScript.
+`tsconfig.json` поврзува app (`src`/DOM) и node (`vite.config.ts`) конфигурации. Користат ES2023, `noEmit` и проверки за неискористени вредности. V1 baseline нема експлицитен strict mode; Phase 1 го вклучува `strict: true` во V2 гранката. `tsc -b` проверува типови; Vite создава JavaScript.
 
 <a id="mk-architecture"></a>
 
@@ -589,7 +591,7 @@ Exact dependency ranges are in [package.json](package.json), with resolved versi
 
 React simplifies reuse, TypeScript documents the shared model, and Vite reduces setup overhead. Client-side routing enables navigation without full page reloads, provided the host handles direct URL/refresh requests correctly. This is not server-side rendering.
 
-`tsconfig.json` references app (`src`/DOM) and Node (`vite.config.ts`) configurations. They use ES2023, `noEmit` and unused-value checks. `strict: true` is not explicitly enabled. `tsc -b` checks types; Vite produces JavaScript.
+`tsconfig.json` references app (`src`/DOM) and Node (`vite.config.ts`) configurations. They use ES2023, `noEmit` and unused-value checks. The V1 baseline did not explicitly enable strict mode; Phase 1 enables `strict: true` on the V2 branch. `tsc -b` checks types; Vite produces JavaScript.
 
 <a id="en-architecture"></a>
 

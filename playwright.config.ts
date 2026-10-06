@@ -10,6 +10,7 @@ export default defineConfig({
         }
       : undefined,
   testDir: './tests',
+  testIgnore: '**/v2/**',
   fullyParallel: false,
   workers: 1,
   use: {

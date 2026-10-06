@@ -1,0 +1,59 @@
+name: Validate Lumora V2 foundation
+
+on:
+  push:
+    branches: ['codex/lumora-v2-*']
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: v2-validation-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      PLAYWRIGHT_CHANNEL: chromium
+      APP_ENV: development
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          package-manager-cache: false
+      - uses: pnpm/action-setup@v6
+        with:
+          cache: true
+      - name: Install pinned dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Install test browser
+        run: pnpm exec playwright install --with-deps chromium
+      - name: Strict types, lint and environment tests
+        run: |
+          pnpm typecheck
+          pnpm typecheck:v2
+          pnpm lint
+          pnpm test:v2:unit
+      - name: Production SSR build and enforced module boundaries
+        run: pnpm check:v2:boundaries
+      - name: Production SSR, hydration and locale browser tests
+        run: pnpm test:v2
+      - name: Development SSR and hydration browser tests
+        run: pnpm test:v2:dev
+      - name: Local Vercel-compatible server build
+        run: pnpm build:v2:vercel
+      - name: Preserve V1 production behavior
+        env:
+          TEST_PAGES_MODE: '1'
+          TEST_BASE_PATH: /lumora-company-website/
+          TEST_BASE_URL: http://127.0.0.1:4180
+        run: |
+          pnpm build
+          pnpm test
+      # No deployment, artifact publishing, service secrets or production permissions.

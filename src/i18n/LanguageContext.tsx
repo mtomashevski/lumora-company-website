@@ -18,16 +18,26 @@ const LanguageContext = createContext<{
   t: (key: TranslationKey, params?: Record<string, string | number>) => string;
   l: (text: LocalizedText) => string;
 } | null>(null);
-export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [language, setLanguage] = useState<Language>(restoredLanguage);
+export function LanguageProvider({
+  children,
+  initialLanguage,
+  persistPreference = true,
+}: {
+  children: ReactNode;
+  initialLanguage?: Language;
+  persistPreference?: boolean;
+}) {
+  const [language, setLanguage] = useState<Language>(() => initialLanguage ?? restoredLanguage());
   useEffect(() => {
+    // An SSR route can own document language and persistence (including content fallbacks).
+    if (!persistPreference) return;
     document.documentElement.lang = language;
     try {
       localStorage.setItem(storageKey, language);
     } catch {
       /* Switching still works when storage is disabled. */
     }
-  }, [language]);
+  }, [language, persistPreference]);
   const t = (key: TranslationKey, params: Record<string, string | number> = {}) =>
     Object.entries(params).reduce(
       (copy, [name, value]) => copy.replaceAll(`{${name}}`, String(value)),

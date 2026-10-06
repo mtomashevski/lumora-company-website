@@ -1,0 +1,4 @@
+# React Router's config compiler requires esbuild's platform-binary setup.
+# Approve this dependency only; other install scripts remain unapproved.
+allowBuilds:
+  esbuild: true

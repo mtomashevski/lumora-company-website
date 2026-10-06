@@ -38,6 +38,12 @@ qa-*.cjs
 .cache/
 .pnpm-store/
 coverage/
+v2/build/
+v2/build-boundary/
+v2/build-vercel/
+v2/.react-router/
+v2/.vercel/
+.vercel/
 *.tsbuildinfo
 
 # OS files, temporary files and editor backups

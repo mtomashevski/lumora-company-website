@@ -1,8 +1,8 @@
 # Lumora V2 architecture assessment
 
-Assessment date: 6 October 2026. Status: **proposal awaiting approval; Phase 1 has not started**.
+Assessment date: 6 October 2026. Status: **approved working architecture**. Phase 1 validation is documented in [the foundation report](v2/PHASE-1.md); Phase 2 has not started.
 
-This document proposes changes to the existing website, not a replacement design. No application source, dependency, deployment workflow, database or external account was changed during this assessment. V1 remains on `main`; assessment documentation is isolated on `codex/lumora-v2-assessment`. No push or production activation is authorized by this assessment.
+This document proposes changes to the existing website, not a replacement design. The original assessment changed documentation only. Subsequent approved Phase 1 work is isolated on `codex/lumora-v2-assessment`; V1 remains on `main`. Production activation and later phases require separate approval.
 
 ## A. Existing V1 and measured baseline
 

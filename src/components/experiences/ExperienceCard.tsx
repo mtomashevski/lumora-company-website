@@ -7,15 +7,21 @@ import { Image } from '../common/Image';
 export function ExperienceCard({
   experience: e,
   headingLevel = 3,
+  routePrefix = '',
 }: {
   experience: Experience;
   headingLevel?: 2 | 3;
+  routePrefix?: string;
 }) {
   const { t, l } = useLanguage();
   const Heading = headingLevel === 2 ? 'h2' : 'h3';
   return (
     <article className="experience-card">
-      <Link to={'/experiences/' + e.slug} className="card-image" aria-label={l(e.title)}>
+      <Link
+        to={routePrefix + '/experiences/' + e.slug}
+        className="card-image"
+        aria-label={l(e.title)}
+      >
         <Image src={e.heroImage.src} alt={l(e.heroImage.alt)} position={e.heroImage.position} />
         <span className="image-tag">{t(`category.${e.category}`)}</span>
         <span className="card-arrow">
@@ -34,7 +40,7 @@ export function ExperienceCard({
           </span>
         </div>
         <Heading className="card-title">
-          <Link to={'/experiences/' + e.slug}>{l(e.title)}</Link>
+          <Link to={routePrefix + '/experiences/' + e.slug}>{l(e.title)}</Link>
         </Heading>
         <p>{l(e.shortDescription)}</p>
         <div className="card-bottom">
@@ -45,7 +51,7 @@ export function ExperienceCard({
                 ? l(e.priceLabel)
                 : t('common.priceRequest')}
           </span>
-          <Link to={'/experiences/' + e.slug} className="card-details">
+          <Link to={routePrefix + '/experiences/' + e.slug} className="card-details">
             {t('detail.eye')}
             <ArrowUpRight size={14} />
           </Link>

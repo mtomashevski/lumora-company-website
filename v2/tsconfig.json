@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "target": "ES2023",
+    "lib": ["ES2023", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "jsx": "react-jsx",
+    "strict": true,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "allowImportingTsExtensions": true,
+    "verbatimModuleSyntax": true,
+    "types": ["node", "vite/client"],
+    "rootDirs": [".", "./.react-router/types"]
+  },
+  "include": [
+    "app/**/*",
+    ".react-router/types/**/*",
+    "*.ts",
+    "../src/**/*",
+    "../tests/v2/**/*.ts",
+    "../playwright.v2.config.ts"
+  ]
+}
