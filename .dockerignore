@@ -1,0 +1,31 @@
+# Allow only the files required to build the original university application.
+**
+!Dockerfile
+!.dockerignore
+!package.json
+!pnpm-lock.yaml
+!pnpm-workspace.yaml
+!tsconfig.json
+!tsconfig.app.json
+!tsconfig.node.json
+!vite.config.ts
+!index.html
+!src/
+!src/**
+!public/
+!public/**
+!scripts/
+!scripts/generate-seo.mjs
+!scripts/security-headers.mjs
+!docker/
+!docker/nginx.conf
+!docker/nginx-main.conf
+
+# Never include environment files or private credential bundles in an image.
+**/.env
+**/.env.*
+**/*.pem
+**/*.key
+**/*.p12
+**/*.pfx
+**/*.keystore

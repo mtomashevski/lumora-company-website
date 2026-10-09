@@ -37,6 +37,6 @@ export const company = {
 };
 // Public build settings are separate so SEO generation can import the verified config in Node.
 export const website = {
-  siteUrl: import.meta.env?.VITE_SITE_URL || (import.meta.env?.PROD ? githubPagesOrigin : ''),
+  siteUrl: import.meta.env?.VITE_SITE_URL ?? (import.meta.env?.PROD ? githubPagesOrigin : ''),
   inquiryEndpoint: import.meta.env?.VITE_INQUIRY_ENDPOINT || '',
 };

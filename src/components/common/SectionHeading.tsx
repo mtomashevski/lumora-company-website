@@ -21,7 +21,7 @@ export function SectionHeading({
       {link && (
         <Link className="text-link" to={link.to}>
           {link.label}
-          <ArrowUpRight size={18} />
+          <ArrowUpRight aria-hidden="true" size={18} />
         </Link>
       )}
     </div>

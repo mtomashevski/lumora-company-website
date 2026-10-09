@@ -7,14 +7,14 @@ export default function NotFound() {
   usePageMeta(t('notFound.metaTitle'), t('notFound.metaDescription'), true);
   return (
     <section className="container not-found">
-      <Compass size={56} />
+      <Compass aria-hidden="true" size={56} />
       <span className="eyebrow">{t('notFound.eye')}</span>
       <h1>{t('notFound.title')}</h1>
       <p>{t('notFound.text')}</p>
       <div>
         <Link className="button" to="/experiences">
           {t('common.explore')}
-          <ArrowUpRight size={18} />
+          <ArrowUpRight aria-hidden="true" size={18} />
         </Link>
         <Link className="text-link" to="/">
           {t('common.backHome')}

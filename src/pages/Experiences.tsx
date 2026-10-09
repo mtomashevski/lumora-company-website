@@ -33,7 +33,7 @@ export default function Experiences() {
       <section className="container catalog">
         <div className="filter-bar">
           <span>
-            <SlidersHorizontal size={18} />
+            <SlidersHorizontal aria-hidden="true" size={18} />
             {t('catalog.find')}
           </span>
           <div>
@@ -95,7 +95,7 @@ export default function Experiences() {
             <p>{t('catalog.emptyText')}</p>
             <button className="button" onClick={() => setParams({})}>
               {t('catalog.clear')}
-              <ArrowUpRight size={17} />
+              <ArrowUpRight aria-hidden="true" size={17} />
             </button>
           </div>
         )}

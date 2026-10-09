@@ -36,7 +36,7 @@ export default function ExperienceDetail() {
     <>
       <section className="container detail-header">
         <Link className="text-link" to="/experiences">
-          <ArrowLeft size={16} />
+          <ArrowLeft aria-hidden="true" size={16} />
           {t('common.all')}
         </Link>
         <div className="detail-title">
@@ -58,7 +58,7 @@ export default function ExperienceDetail() {
         <div className="detail-meta">
           {meta.map(({ Icon, label, value }) => (
             <div key={label}>
-              <Icon size={20} />
+              <Icon size={20} aria-hidden="true" />
               <div>
                 <span>{label}</span>
                 <p>{value}</p>
@@ -80,7 +80,7 @@ export default function ExperienceDetail() {
               <ul className="highlights">
                 {e.highlights.map((h) => (
                   <li key={h.en}>
-                    <Check size={18} />
+                    <Check aria-hidden="true" size={18} />
                     {l(h)}
                   </li>
                 ))}
@@ -132,7 +132,7 @@ export default function ExperienceDetail() {
             <section>
               <h2>{t('detail.meeting')}</h2>
               <p>
-                <MapPin size={18} className="inline-icon" />
+                <MapPin aria-hidden="true" size={18} className="inline-icon" />
                 {l(e.meetingPoint)}
               </p>
             </section>

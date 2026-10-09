@@ -15,21 +15,25 @@ export function ExperienceCard({
   const Heading = headingLevel === 2 ? 'h2' : 'h3';
   return (
     <article className="experience-card">
-      <Link to={'/experiences/' + e.slug} className="card-image" aria-label={l(e.title)}>
+      <Link
+        to={'/experiences/' + e.slug}
+        className="card-image"
+        aria-label={`${l(e.title)} — ${t(`category.${e.category}`)}`}
+      >
         <Image src={e.heroImage.src} alt={l(e.heroImage.alt)} position={e.heroImage.position} />
         <span className="image-tag">{t(`category.${e.category}`)}</span>
         <span className="card-arrow">
-          <ArrowUpRight size={21} />
+          <ArrowUpRight aria-hidden="true" size={21} />
         </span>
       </Link>
       <div className="card-body">
         <div className="meta">
           <span>
-            <MapPin size={14} />
+            <MapPin aria-hidden="true" size={14} />
             {l(destinationName(e.destination))}
           </span>
           <span>
-            <Clock size={14} />
+            <Clock aria-hidden="true" size={14} />
             {l(e.duration)}
           </span>
         </div>
@@ -47,7 +51,7 @@ export function ExperienceCard({
           </span>
           <Link to={'/experiences/' + e.slug} className="card-details">
             {t('detail.eye')}
-            <ArrowUpRight size={14} />
+            <ArrowUpRight aria-hidden="true" size={14} />
           </Link>
         </div>
       </div>

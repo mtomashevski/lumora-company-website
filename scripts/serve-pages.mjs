@@ -43,15 +43,20 @@ const server = http.createServer(async (request, response) => {
       file = path.join(file, 'index.html');
     }
     const content = await readFile(file).catch(() => undefined);
+    // Read the fallback before sending headers, including during a local rebuild.
+    const body = content || (await readFile(path.join(root, '404.html')));
     response.writeHead(content ? 200 : 404, {
       'Content-Type': content
         ? mime[path.extname(file)] || 'application/octet-stream'
         : mime['.html'],
     });
-    response.end(content || (await readFile(path.join(root, '404.html'))));
+    response.end(body);
   } catch {
-    response.writeHead(500);
-    response.end('Static preview error');
+    if (response.headersSent) response.destroy();
+    else {
+      response.writeHead(500);
+      response.end('Static preview error');
+    }
   }
 });
 server.listen(port, '127.0.0.1', () => console.log(`Pages QA: http://127.0.0.1:${port}${base}`));

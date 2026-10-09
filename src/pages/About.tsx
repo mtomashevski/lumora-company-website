@@ -19,7 +19,7 @@ export default function About() {
           <p>{t('about.purpose')}</p>
           <Link className="button" to="/contact">
             {t('about.conversation')}
-            <ArrowUpRight size={18} />
+            <ArrowUpRight aria-hidden="true" size={18} />
           </Link>
         </div>
         <div className="about-photo">

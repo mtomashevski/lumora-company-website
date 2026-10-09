@@ -1,0 +1,10 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        # Optional public HTTP(S) origin only; leave blank until RepoRun assigns it.
+        VITE_SITE_URL: ""
+    cpus: "0.50"
+    mem_limit: 128m

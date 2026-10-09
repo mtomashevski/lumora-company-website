@@ -20,18 +20,18 @@ export default function Contact() {
           <p>{t('contact.asideText')}</p>
           <div className="contact-details">
             <span>
-              <MapPin size={19} />
+              <MapPin aria-hidden="true" size={19} />
               {t('common.country')}
             </span>
             {company.email && (
               <a href={'mailto:' + company.email}>
-                <Mail size={19} />
+                <Mail aria-hidden="true" size={19} />
                 {company.email}
               </a>
             )}
             {company.phone && (
               <a href={'tel:' + company.phone}>
-                <Phone size={19} />
+                <Phone aria-hidden="true" size={19} />
                 {company.phone}
               </a>
             )}

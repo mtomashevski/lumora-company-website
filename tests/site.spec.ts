@@ -21,9 +21,9 @@ const routes = [
   '/missing',
 ];
 async function switchToMk(page: Page) {
-  if (!(await page.getByRole('button', { name: 'Македонски', exact: true }).isVisible()))
+  if (!(await page.getByRole('button', { name: 'MK — Македонски', exact: true }).isVisible()))
     await page.locator('#menu-toggle').click();
-  await page.getByRole('button', { name: 'Македонски', exact: true }).click();
+  await page.getByRole('button', { name: 'MK — Македонски', exact: true }).click();
   if (await page.locator('#menu-toggle').isVisible()) await page.keyboard.press('Escape');
   await expect(page.locator('html')).toHaveAttribute('lang', 'mk');
 }
@@ -168,18 +168,23 @@ test('Language switches immediately, preserves route/filter/form, and survives r
   expect(await page.evaluate(() => localStorage.getItem('lumora-language'))).toBe('mk');
   await visit(page, '/contact');
   await page.locator('#inquiry-name').fill('Ана Тест');
-  await page.getByRole('button', { name: 'English', exact: true }).click();
+  await page.getByRole('button', { name: 'EN — English', exact: true }).click();
   await expect(page.locator('#inquiry-name')).toHaveValue('Ана Тест');
   await expect(page.locator('h1')).toHaveText(en['contact.title']);
 });
 test('Mobile navigation and language selector are keyboard accessible', async ({ page }) => {
   await page.setViewportSize({ width: 375, height: 812 });
   await visit(page, '/');
+  await expect(page.locator('#menu-toggle')).toBeVisible();
+  await page.bringToFront();
   await page.keyboard.press('Tab');
   await expect(page.getByRole('link', { name: en['nav.skip'] })).toBeFocused();
   await page.locator('#menu-toggle').click();
   await expect(page.getByRole('navigation')).toBeVisible();
-  await page.getByRole('button', { name: 'Македонски', exact: true }).focus();
+  await expect(
+    page.getByRole('navigation').getByRole('link', { name: en['nav.home'], exact: true }),
+  ).toBeFocused();
+  await page.getByRole('button', { name: 'MK — Македонски', exact: true }).focus();
   await page.keyboard.press('Enter');
   await expect(page.locator('html')).toHaveAttribute('lang', 'mk');
   await page.keyboard.press('Escape');
@@ -192,6 +197,13 @@ test('Mobile navigation and language selector are keyboard accessible', async ({
     .click();
   await expect(page).toHaveURL(/\/experiences$/);
   await expect(page.locator('#menu-toggle')).toHaveAttribute('aria-expanded', 'false');
+  // A high-zoom/landscape viewport must scroll the menu, not hide focused controls.
+  await page.setViewportSize({ width: 320, height: 225 });
+  await page.locator('#menu-toggle').click();
+  for (let index = 0; index < 7; index++) await page.keyboard.press('Tab');
+  await expect(page.locator('.nav-cta')).toBeFocused();
+  await expect(page.locator('.nav-cta')).toBeInViewport({ ratio: 1 });
+  await page.keyboard.press('Escape');
 });
 test('Each activity links to its verified GetYourGuide listing and inquiry', async ({ page }) => {
   for (const experience of experiences) {
@@ -314,4 +326,109 @@ test('The site still loads if preference storage is blocked', async ({ page }) =
   await expect(page.locator('h1')).toContainText(en['home.titleFirst']);
   await switchToMk(page);
   await expect(page.locator('h1')).toContainText(mk['home.titleFirst']);
+});
+test('Form boundaries and placeholder text retain accessible contrast', async ({ page }) => {
+  const measure = async (selector: string) => page.locator(selector).evaluateAll((elements) => {
+    const channels = (color: string) => color.match(/[\d.]+/g)!.slice(0, 3).map(Number);
+    const luminance = (color: string) => {
+      const values = channels(color).map((value) => {
+        const normalized = value / 255;
+        return normalized <= 0.04045 ? normalized / 12.92 : ((normalized + 0.055) / 1.055) ** 2.4;
+      });
+      return 0.2126 * values[0] + 0.7152 * values[1] + 0.0722 * values[2];
+    };
+    const contrast = (foreground: string, background: string) => {
+      const a = luminance(foreground), b = luminance(background);
+      return (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
+    };
+    return elements.map((element) => {
+      const style = window.getComputedStyle(element);
+      let parent = element.parentElement;
+      let background = 'rgb(255, 255, 255)';
+      while (parent) {
+        const candidate = window.getComputedStyle(parent).backgroundColor;
+        if (candidate !== 'rgba(0, 0, 0, 0)' && candidate !== 'transparent') {
+          background = candidate;
+          break;
+        }
+        parent = parent.parentElement;
+      }
+      return {
+        border: contrast(style.borderTopColor, background),
+        placeholder: element.hasAttribute('placeholder')
+          ? contrast(window.getComputedStyle(element, '::placeholder').color, style.backgroundColor)
+          : null,
+      };
+    });
+  });
+  await visit(page, '/experiences');
+  for (const result of await measure('.filter-bar select')) expect(result.border).toBeGreaterThanOrEqual(3);
+  await visit(page, '/contact');
+  for (const result of await measure('.form-grid input, .form-grid select, .form-grid textarea')) {
+    expect(result.border).toBeGreaterThanOrEqual(3);
+    if (result.placeholder !== null) expect(result.placeholder).toBeGreaterThanOrEqual(4.5);
+  }
+});
+
+test('Directory redirects preserve generated, runtime, Open Graph and sitemap canonical URLs', async ({
+  page,
+  request,
+}) => {
+  test.skip(process.env.TEST_PAGES_MODE !== '1', 'Requires directory-index production output');
+  const origin = process.env.TEST_SITE_URL ??
+    (testBase === '/' ? '' : 'https://mtomashevski.github.io');
+  const knownRoutes = routes.filter((route) => !route.includes('missing'));
+  const expectedUrl = (route: string) =>
+    origin + appPath(route === '/' ? '/' : route.replace(/\/+$/, '') + '/');
+  const sitemap = origin ? await (await request.get(appPath('/sitemap.xml'))).text() : '';
+
+  // The existing static host redirects directory requests; SEO must match before and after it.
+  const redirect = await request.get(appPath('/about?source=canonical-check'), { maxRedirects: 0 });
+  expect(redirect.status()).toBe(301);
+  expect(redirect.headers().location).toBe(appPath('/about/?source=canonical-check'));
+
+  for (const language of ['en', 'mk'] as const) {
+    await visit(page, '/');
+    if (language === 'mk') await switchToMk(page);
+    for (const route of knownRoutes) {
+      const response = await visit(page, route + '?source=canonical-check');
+      expect(response?.status()).toBe(200);
+      await expect(page.locator('h1')).toBeVisible();
+      await expect(page.locator('html')).toHaveAttribute('lang', language);
+      expect(new URL(page.url()).pathname).toBe(appPath(route === '/' ? '/' : route + '/'));
+      const html = await response!.text();
+      if (origin) {
+        const expected = expectedUrl(route);
+        expect(html).toContain(`rel="canonical" href="${expected}"`);
+        expect(html).toContain(`property="og:url" content="${expected}"`);
+        await expect(page.locator('link[rel="canonical"]')).toHaveCount(1);
+        await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', expected);
+        await expect(page.locator('meta[property="og:url"]')).toHaveAttribute('content', expected);
+        expect(sitemap).toContain(`<loc>${expected}</loc>`);
+        await page.reload();
+        await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', expected);
+      } else {
+        expect(html).not.toContain('rel="canonical"');
+        expect(html).not.toContain('property="og:url"');
+        expect(html).not.toContain('https://mtomashevski.github.io');
+        await expect(page.locator('link[rel="canonical"]')).toHaveCount(0);
+        await expect(page.locator('meta[property="og:url"]')).toHaveCount(0);
+      }
+    }
+    // Client navigation has no host redirect, so slashless route URLs need the same metadata.
+    await visit(page, '/');
+    await page.locator('#main-navigation').getByRole('link', {
+      name: language === 'mk' ? mk['nav.about'] : en['nav.about'], exact: true,
+    }).click();
+    expect(new URL(page.url()).pathname).toBe(appPath('/about'));
+    if (origin) {
+      await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', expectedUrl('/about'));
+      await expect(page.locator('meta[property="og:url"]')).toHaveAttribute('content', expectedUrl('/about'));
+    } else {
+      await expect(page.locator('link[rel="canonical"]')).toHaveCount(0);
+    }
+  }
+  if (!origin) expect((await request.get(appPath('/sitemap.xml'))).status()).toBe(404);
+  await visit(page, '/missing');
+  await expect(page.locator('link[rel="canonical"]')).toHaveCount(0);
 });
