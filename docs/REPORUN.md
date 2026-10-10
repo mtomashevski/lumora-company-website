@@ -39,10 +39,12 @@ existing Pages default; its workflow supplies the actual Pages origin explicitly
 RepoRun's image initially omits canonical/absolute OG URLs and sitemap generation
 because its actual endpoint is unknown. Existing public robots instructions remain.
 
-After RepoRun provides the real public HTTP(S) origin, optionally set the public
-build argument `VITE_SITE_URL` in `docker-compose.yml` and rebuild. It must be an
-origin only, with no path, credentials or trailing slash. Do not put secrets in
-Vite build arguments. This configuration assumes RepoRun gives the app its own
+RepoRun does not support Compose `build.args`. The Dockerfile directly sets
+`VITE_BASE_PATH=/` and `VITE_SITE_URL=""`, so no Compose build arguments are needed.
+After RepoRun provides the real public HTTP(S) origin, optionally update
+`ENV VITE_SITE_URL=""` in the Dockerfile to that public origin and rebuild. Use an
+origin only, with no path, credentials or trailing slash. Never put secrets in
+public Vite configuration. This configuration assumes RepoRun gives the app its own
 origin/root path. If it uses a subdirectory prefix, obtain the exact prefix first;
 the Docker base path and Nginx routing must then be adapted together.
 

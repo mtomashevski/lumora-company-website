@@ -11,9 +11,8 @@ COPY scripts/generate-seo.mjs ./scripts/generate-seo.mjs
 COPY scripts/security-headers.mjs ./scripts/security-headers.mjs
 # RepoRun supplies an endpoint, not a GitHub Pages subdirectory.
 # A blank origin deliberately omits canonical URLs until the real endpoint is known.
-ARG VITE_SITE_URL=""
 ENV VITE_BASE_PATH=/
-ENV VITE_SITE_URL=${VITE_SITE_URL}
+ENV VITE_SITE_URL=""
 RUN pnpm build && node scripts/security-headers.mjs /app/security-headers.conf
 
 FROM nginxinc/nginx-unprivileged:stable-alpine AS runtime
