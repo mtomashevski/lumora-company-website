@@ -32,22 +32,22 @@ export default function Home() {
           <div className="hero-actions">
             <Link to="/experiences" className="button button-light">
               {t('common.explore')}
-              <ArrowUpRight size={19} />
+              <ArrowUpRight aria-hidden="true" size={19} />
             </Link>
             <Link to="/about" className="hero-story">
               {t('common.meet')}
-              <ArrowUpRight size={18} />
+              <ArrowUpRight aria-hidden="true" size={18} />
             </Link>
           </div>
         </div>
         <div className="container hero-bottom">
           <span>
-            <MapPin size={16} />
+            <MapPin aria-hidden="true" size={16} />
             {t('home.location')}
           </span>
-          <a href="#featured" aria-label={t('home.scrollLabel')}>
+          <a href="#featured" aria-label={`${t('home.scroll')} — ${t('home.scrollLabel')}`}>
             {t('home.scroll')}
-            <ArrowDown size={17} />
+            <ArrowDown aria-hidden="true" size={17} />
           </a>
         </div>
       </section>
@@ -94,7 +94,7 @@ export default function Home() {
                     <span>{t('home.destinationTag')}</span>
                     <h3>{l(d.name)}</h3>
                   </div>
-                  <ArrowUpRight className="destination-arrow" />
+                  <ArrowUpRight aria-hidden="true" className="destination-arrow" />
                 </Link>
               ))}
           </div>
@@ -107,7 +107,7 @@ export default function Home() {
           <p>{t('home.whyText')}</p>
           <Link to="/about" className="text-link">
             {t('common.learn')}
-            <ArrowUpRight size={18} />
+            <ArrowUpRight aria-hidden="true" size={18} />
           </Link>
         </div>
         <div className="values">
@@ -118,7 +118,7 @@ export default function Home() {
           ].map(({ Icon, title, text }) => (
             <div className="value" key={title}>
               <span className="value-icon">
-                <Icon size={23} />
+                <Icon aria-hidden="true" size={23} />
               </span>
               <div>
                 <h3>{title}</h3>
@@ -136,7 +136,7 @@ export default function Home() {
           <p>{t('home.inspirationText')}</p>
           <Link className="button button-light" to="/experiences?category=nature-adventure">
             {t('home.outdoor')}
-            <ArrowUpRight size={18} />
+            <ArrowUpRight aria-hidden="true" size={18} />
           </Link>
         </div>
       </section>

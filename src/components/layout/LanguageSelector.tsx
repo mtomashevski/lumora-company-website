@@ -6,7 +6,7 @@ export function LanguageSelector() {
       <button
         type="button"
         lang="en"
-        aria-label="English"
+        aria-label="EN — English"
         aria-pressed={language === 'en'}
         onClick={() => setLanguage('en')}
       >
@@ -16,7 +16,7 @@ export function LanguageSelector() {
       <button
         type="button"
         lang="mk"
-        aria-label="Македонски"
+        aria-label="MK — Македонски"
         aria-pressed={language === 'mk'}
         onClick={() => setLanguage('mk')}
       >

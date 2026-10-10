@@ -26,7 +26,7 @@ export default function Destinations() {
                 </span>
                 <h2>{l(d.name)}</h2>
               </div>
-              <ArrowUpRight className="destination-arrow" />
+              <ArrowUpRight aria-hidden="true" className="destination-arrow" />
             </Link>
           ))}
         </div>

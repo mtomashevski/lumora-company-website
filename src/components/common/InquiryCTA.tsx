@@ -12,7 +12,7 @@ export function InquiryCTA() {
       </div>
       <Link to="/contact" className="button button-light">
         {t('cta.button')}
-        <ArrowUpRight size={18} />
+        <ArrowUpRight aria-hidden="true" size={18} />
       </Link>
     </section>
   );

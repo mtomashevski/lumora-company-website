@@ -34,6 +34,8 @@ export function Layout() {
   }, [pathname]);
   useEffect(() => {
     if (!open) return;
+    // The expanded panel precedes the toggle in DOM order; enter it on opening.
+    document.querySelector<HTMLAnchorElement>('#main-navigation a')?.focus();
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         setOpen(false);
@@ -66,7 +68,7 @@ export function Layout() {
             <LanguageSelector />
             <Link to="/contact" className="button nav-cta" onClick={() => setOpen(false)}>
               {t('nav.plan')}
-              <ArrowUpRight size={17} />
+              <ArrowUpRight aria-hidden="true" size={17} />
             </Link>
           </nav>
           <button
@@ -77,7 +79,7 @@ export function Layout() {
             aria-controls="main-navigation"
             onClick={() => setOpen(!open)}
           >
-            {open ? <X /> : <Menu />}
+            {open ? <X aria-hidden="true" /> : <Menu aria-hidden="true" />}
           </button>
         </div>
       </header>
@@ -94,17 +96,17 @@ export function Layout() {
             <span className="footer-location">{t('footer.based')}</span>
           </div>
           <div>
-            <h3>{t('footer.discover')}</h3>
+            <h2>{t('footer.discover')}</h2>
             <Link to="/experiences">{t('nav.experiences')}</Link>
             <Link to="/destinations">{t('nav.destinations')}</Link>
             <Link to="/about">{t('footer.story')}</Link>
             <ExternalLink href={company.getYourGuideUrl} label={t('common.reviews')} />
           </div>
           <div>
-            <h3>{t('footer.plans')}</h3>
+            <h2>{t('footer.plans')}</h2>
             <Link to="/contact">
               {t('common.inquiry')}
-              <ArrowUpRight size={15} />
+              <ArrowUpRight aria-hidden="true" size={15} />
             </Link>
             <ExternalLink href={company.instagramUrl} label={company.instagramHandle} />
             <ExternalLink href={company.getYourGuideUrl} label="GetYourGuide" />
@@ -113,10 +115,10 @@ export function Layout() {
           </div>
           <div className="footer-note">
             <span className="eyebrow">{t('footer.eye')}</span>
-            <h3>{t('footer.title')}</h3>
+            <h2>{t('footer.title')}</h2>
             <Link to="/contact" className="text-link">
               {t('common.getInTouch')}
-              <ArrowUpRight size={18} />
+              <ArrowUpRight aria-hidden="true" size={18} />
             </Link>
           </div>
         </div>

@@ -36,6 +36,8 @@ qa-*.cjs
 # Generated caches, test coverage and local package stores
 .vite/
 .cache/
+.tmp/
+.eslintcache
 .pnpm-store/
 coverage/
 *.tsbuildinfo

@@ -8,4 +8,5 @@ export default defineConfig(({ mode }) => ({
       (mode === 'production' ? githubPagesBasePath : '/'),
   ),
   plugins: [react(), tailwindcss()],
+  build: { sourcemap: false },
 }));

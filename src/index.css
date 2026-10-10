@@ -8,8 +8,9 @@
   -webkit-font-smoothing: antialiased;
   font-weight: 400;
   --purple: #48265b;
-  --muted: #716c72;
+  --muted: #68616b;
   --line: #e6e0e4;
+  --control-border: #8a7e90;
   --cream: #fcfaf7;
 }
 * {
@@ -88,6 +89,8 @@ svg {
 :focus-visible {
   outline: 3px solid #b366af;
   outline-offset: 5px;
+  scroll-margin-top: 105px;
+  scroll-margin-bottom: 12px;
 }
 main:focus {
   outline: none;
@@ -454,21 +457,6 @@ main:focus {
   font-weight: 600;
   color: var(--purple);
 }
-.sample-label {
-  font-size: 9px;
-  color: #706373;
-  padding: 5px 8px;
-  border-radius: 4px;
-  background: #f3edf5;
-  font-weight: 400;
-  white-space: nowrap;
-}
-.demo-note {
-  font-size: 11px !important;
-  line-height: 1.65;
-  margin-top: 20px;
-  color: #767078;
-}
 .destinations-section {
   background: #f1ede7;
 }
@@ -660,9 +648,11 @@ main:focus {
   font-size: 10px;
   display: block;
   margin-top: 18px;
-  color: #777078;
+  color: #68616b;
 }
-.footer h3 {
+.footer h2 {
+  letter-spacing: -0.025em;
+  line-height: 1.5;
   font-family: Arial, sans-serif;
   font-size: 12px;
   font-weight: 600;
@@ -686,7 +676,7 @@ main:focus {
 .footer-note .eyebrow {
   font-size: 8px;
 }
-.footer-note h3 {
+.footer-note h2 {
   font-family: Georgia, serif;
   font-size: 24px;
   line-height: 1.4;
@@ -698,7 +688,7 @@ main:focus {
   justify-content: space-between;
   gap: 20px;
   font-size: 9px;
-  color: #7b717d;
+  color: #68616b;
   border-top: 1px solid #ded7dd;
   padding-block: 24px;
   margin-top: 47px;
@@ -746,7 +736,7 @@ main:focus {
   padding: 11px 12px;
   font-size: 12px;
   background: #fcfaf7;
-  border: 1px solid var(--line);
+  border: 1px solid var(--control-border);
   border-radius: 5px;
   color: #332a38;
 }
@@ -866,7 +856,7 @@ main:focus {
   display: block;
   margin-top: 18px;
   text-align: center;
-  color: #786780;
+  color: #6e5976;
   font-size: 10px;
   line-height: 1.7;
 }
@@ -1076,7 +1066,7 @@ main:focus {
 }
 .form-grid small {
   font-size: 10px;
-  color: #777078;
+  color: #68616b;
 }
 .form-grid input,
 .form-grid select,
@@ -1084,7 +1074,7 @@ main:focus {
   display: block;
   width: 100%;
   min-width: 0;
-  border: 1px solid #dcd5df;
+  border: 1px solid var(--control-border);
   border-radius: 5px;
   padding: 12px 13px;
   margin-top: 8px;
@@ -1099,7 +1089,7 @@ main:focus {
 }
 .form-grid input::placeholder,
 .form-grid textarea::placeholder {
-  color: #8a828b;
+  color: var(--muted);
 }
 .full-width {
   grid-column: 1/-1;
@@ -1256,6 +1246,8 @@ main:focus {
     display: none;
     position: absolute;
     top: 76px;
+    max-height: calc(100dvh - 76px);
+    overflow-y: auto;
     left: 0;
     right: 0;
     background: var(--cream);
@@ -1268,6 +1260,9 @@ main:focus {
     flex-direction: column;
     align-items: stretch;
     gap: 3px;
+  }
+  .navigation :focus-visible {
+    scroll-margin-block: 12px;
   }
   .navigation > a:not(.button) {
     padding: 14px;
@@ -1528,9 +1523,6 @@ main:focus {
   .card-bottom {
     font-size: 12px;
   }
-  .demo-note {
-    font-size: 10px !important;
-  }
   .destination-grid {
     grid-template-columns: 1fr;
     gap: 18px;
@@ -1618,7 +1610,7 @@ main:focus {
     border-top: 1px solid var(--line);
     padding-top: 26px;
   }
-  .footer-note h3 br {
+  .footer-note h2 br {
     display: none;
   }
   .footer-bottom {
@@ -1973,7 +1965,7 @@ main:focus {
   width: 100%;
   margin-top: 10px;
   padding: 15px;
-  border: 1px solid var(--line);
+  border: 1px solid var(--control-border);
   border-radius: 5px;
   background: var(--cream);
   font:
@@ -2098,7 +2090,7 @@ main:focus {
   .inquiry-panel .button {
     font-size: 12px;
   }
-  .footer-note h3 {
+  .footer-note h2 {
     font-size: 24px;
   }
   .footer-bottom {

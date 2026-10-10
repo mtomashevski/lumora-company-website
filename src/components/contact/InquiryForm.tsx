@@ -74,7 +74,7 @@ export function InquiryForm() {
   if (state === 'prepared' || state === 'sent')
     return (
       <div className="success-state">
-        <CheckCircle size={44} />
+        <CheckCircle aria-hidden="true" size={44} />
         <span className="eyebrow">
           {t(state === 'prepared' ? 'form.preparedEye' : 'form.sentEye')}
         </span>
@@ -123,7 +123,7 @@ export function InquiryForm() {
         </button>
         <Link className="text-link" to="/experiences">
           {t('common.keepExploring')}
-          <ArrowUpRight size={17} />
+          <ArrowUpRight aria-hidden="true" size={17} />
         </Link>
       </div>
     );
@@ -262,7 +262,7 @@ export function InquiryForm() {
               ? 'form.send'
               : 'form.prepare',
         )}
-        <ArrowUpRight size={18} />
+        <ArrowUpRight aria-hidden="true" size={18} />
       </button>
       <p className="form-footnote">
         {!website.inquiryEndpoint && t('form.localNote')} {t('form.required')}

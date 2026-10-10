@@ -17,7 +17,7 @@ export function usePageMeta(title: string, description: string, noIndex = false)
       robots: noIndex ? 'noindex, follow' : 'index, follow',
       ...(website.siteUrl
         ? {
-            'og:url': website.siteUrl.replace(/\/$/, '') + publicAsset(pathname),
+            'og:url': website.siteUrl.replace(/\/$/, '') + publicAsset(pathname.replace(/\/+$/, '') + '/'),
             'og:image':
               website.siteUrl.replace(/\/$/, '') +
               publicAsset('/images/experiences/macedonian-heritage/image2.avif'),
@@ -37,7 +37,7 @@ export function usePageMeta(title: string, description: string, noIndex = false)
     if (website.siteUrl && !noIndex) {
       const link = document.createElement('link');
       link.rel = 'canonical';
-      link.href = website.siteUrl.replace(/\/$/, '') + publicAsset(pathname);
+      link.href = website.siteUrl.replace(/\/$/, '') + publicAsset(pathname.replace(/\/+$/, '') + '/');
       document.head.append(link);
     }
   }, [title, description, pathname, noIndex, language]);

@@ -9,7 +9,8 @@ import {
   normalizeBasePath,
 } from '../src/utils/deployment.ts';
 const env = loadEnv('production', process.cwd(), 'VITE_');
-const domain = (env.VITE_SITE_URL || githubPagesOrigin).replace(/\/$/, '');
+// Missing configuration preserves Pages defaults; explicit blank omits an unknown origin.
+const domain = (env.VITE_SITE_URL ?? githubPagesOrigin).replace(/\/$/, '');
 const base = normalizeBasePath(env.VITE_BASE_PATH || githubPagesBasePath);
 if (domain) {
   const parsed = new URL(domain);
@@ -43,7 +44,7 @@ for (const [route, title, description] of routes) {
     )
     .replace(/(<meta\s+property="og:description"\s+content=")[^"]*/, `$1${escape(description)}`);
   if (domain) {
-    const url = domain + base + route;
+    const url = domain + normalizeBasePath(base + route);
     const address = company.registeredAddress;
     const structured = {
       '@context': 'https://schema.org',
@@ -90,7 +91,7 @@ await writeFile('dist/.nojekyll', '');
 if (domain) {
   await writeFile(
     'dist/sitemap.xml',
-    `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${routes.map(([route]) => `<url><loc>${escape(domain + base + route)}</loc></url>`).join('')}</urlset>`,
+    `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${routes.map(([route]) => `<url><loc>${escape(domain + normalizeBasePath(base + route))}</loc></url>`).join('')}</urlset>`,
   );
   await writeFile(
     'dist/robots.txt',
