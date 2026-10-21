@@ -27,10 +27,46 @@ has access; do not replace the access policy with an invented public-policy valu
 Docker builds explicitly use `VITE_BASE_PATH=/`. Both the router and all public
 assets already use this base-aware configuration. The existing build generates
 HTML for Home, Experiences, all five tour pages, Destinations, About, Contact and
-Privacy. Nginx serves those indexes on direct navigation/refresh. Unknown routes
+Privacy, News and all four article pages. Nginx serves those indexes on direct
+navigation/refresh. Unknown routes
 serve the existing branded `404.html` with HTTP 404; client navigation still uses
 the existing React Router not-found component. Existing EN/MK switching,
 localStorage preference, form behavior and external links are unchanged.
+
+Nginx binds explicitly to `0.0.0.0:8080`. Its directory redirects are relative
+(`absolute_redirect off`), so refreshing `/news` redirects to `/news/` on the
+same public origin. With Nginx's default absolute redirects, that response can
+instead point to `http://<host>:8080/news/`, bypassing RepoRun's ingress and
+causing a refused connection. This is a redirect/proxy boundary issue, not a
+missing SPA fallback: generated directory indexes already serve known routes.
+See [Nginx's absolute_redirect documentation](https://nginx.org/en/docs/http/ngx_http_core_module.html#absolute_redirect).
+
+After a root build and with real Nginx running locally, run
+`node --test tests/reporun-http.mjs` (default `http://127.0.0.1:8080`; override
+`NGINX_TEST_ORIGIN` for another local HTTP address). The test sends a public Host
+and forwarded HTTPS header, checks every generated route with/without a slash
+and query parameters, and verifies health, 404s, private paths and compiled assets.
+It deliberately does not use the Node Pages emulator. Test against a local
+server, not the CAS-protected public endpoint.
+
+The refresh regression was reproduced with official portable Nginx 1.30.6 on
+Windows using the production server rules; only filesystem/log/temp/include
+paths were adapted for that OS. The old configuration emitted an absolute
+internal-port redirect; the fixed configuration passed all 17 HTTP tests and
+`nginx -t`, with an observed `0.0.0.0:8080` listener. Docker/Alpine startup and the
+actual RepoRun proxy/CAS remain separate runtime checks. In particular, a direct
+request to `/news/` already returned 200 locally before this fix. If that exact
+slashed URL still fails without redirecting after an operator-approved rebuild,
+inspect the RepoRun ingress, container logs and health status rather than adding
+an unrelated SPA fallback. Clear a cached permanent redirect or use a fresh browser
+session when retesting. No RepoRun settings or deployment are changed by this fix.
+
+Refresh-fix validation: TypeScript, ESLint and all three privacy unit tests passed;
+both root/blank-origin and GitHub Pages production builds passed. Browser tests
+against real Nginx passed 46 cases (two Pages-only cases skipped); the Pages suite
+passed all 48 cases, including generated/runtime canonical consistency. Compose
+restriction and unchanged resource/ingress checks passed. Docker is unavailable
+locally, so this does not claim a successful Linux container or live RepoRun test.
 
 The GitHub Pages workflow and default build base `/lumora-company-website/` are
 unchanged. An explicitly blank `VITE_SITE_URL` now means “origin not configured”,
