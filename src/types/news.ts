@@ -6,7 +6,6 @@ export interface NewsArticle {
   title: LocalizedText;
   excerpt: LocalizedText;
   category?: LocalizedText;
-  demonstration: boolean;
   publishedAt?: string;
   cover?: TravelImage;
   sections: { heading: LocalizedText; paragraphs: LocalizedText[] }[];

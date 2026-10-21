@@ -83,7 +83,7 @@ for (const language of ['en', 'mk'] as const) {
         ).toBe(true);
         expect(await page.title()).toContain(company.companyName);
         expect(await page.locator('meta[name="description"]').getAttribute('content')).toBeTruthy();
-        if (!route.startsWith('/news')) expect(await page.locator('body').innerText()).not.toMatch(
+        expect(await page.locator('body').innerText()).not.toMatch(
           /sample|demo|preview|university|fictional|illustrative|Lorem ipsum|TBD/i,
         );
         if (language === 'mk') expect(await page.locator('h1').innerText()).toMatch(/[А-Яа-я]/);

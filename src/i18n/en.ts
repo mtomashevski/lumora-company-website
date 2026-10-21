@@ -1,18 +1,13 @@
 // UI copy stays centralized; activity-specific copy lives in the bilingual catalog.
 export const en = {
-  'nav.news': 'News',
-  'news.eye': 'STORIES & PERSPECTIVES',
-  'news.title': 'News & Updates',
-  'news.intro':
-    'Stories, travel notes and updates, with space for a closer look at North Macedonia.',
-  'news.articles': 'Latest articles',
-  'news.demo': 'Demonstration',
-  'news.demonstrationNote':
-    'Demonstration content for the university presentation. These examples are not real Lumora announcements and have no publication date.',
-  'news.undated': 'Undated example',
+  'nav.news': 'News & Stories',
+  'news.eye': 'TRAVEL INSPIRATION',
+  'news.title': 'News & Stories',
+  'news.intro': 'Destination guides and travel inspiration for a closer look at North Macedonia.',
+  'news.articles': 'Destination stories',
   'news.published': 'Published:',
   'news.readMore': 'Read more',
-  'news.back': 'Back to News',
+  'news.back': 'Back to News & Stories',
   'news.empty': 'No articles are available yet. Please check back later.',
   'cookies.title': 'Your privacy matters',
   'cookies.notice':

@@ -1,6 +1,6 @@
 import type { NewsArticle } from '../types/news';
 
-// User-supplied AI artwork illustrates undated academic editorial examples, not business announcements.
+// Evergreen destination stories use user-supplied AI illustrations, not documentary photographs.
 export const newsArticles: NewsArticle[] = [
   {
     slug: 'a-thoughtful-day-outdoors',
@@ -9,14 +9,13 @@ export const newsArticles: NewsArticle[] = [
       mk: 'Кањонот Матка: меѓу карпите и водата',
     },
     excerpt: {
-      en: 'An illustrated editorial example about the still water, dramatic cliffs and unhurried moments of Matka Canyon.',
-      mk: 'Илустриран уреднички пример за мирната вода, впечатливите карпи и спокојните мигови во кањонот Матка.',
+      en: 'Discover Matka Canyon through its cliffs, waterside scenery and moments worth slowing down for.',
+      mk: 'Запознајте го кањонот Матка низ неговите карпи, крајбрежни предели и мигови што заслужуваат поспокоен ритам.',
     },
     category: {
       en: 'Outdoor notes',
       mk: 'Белешки од природата',
     },
-    demonstration: true,
     cover: {
       src: '/images/news/matka-canyon.webp',
       alt: {
@@ -32,8 +31,8 @@ export const newsArticles: NewsArticle[] = [
         },
         paragraphs: [
           {
-            en: 'Tall cliffs and quiet water shape this imagined view of Matka Canyon. The illustration invites a slower look at reflections, trees and the path of a small boat, rather than a packed schedule.',
-            mk: 'Високи карпи и мирна вода го обликуваат овој замислен поглед кон кањонот Матка. Илустрацијата повикува на спокојно набљудување на одразите, дрвјата и движењето на мал чамец, наместо на преполн распоред.',
+            en: 'Matka Canyon lies southwest of Skopje, along the Treska River. Its cliffs and water offer a different perspective from the city. Leave time to notice the reflections, the shapes of the rock and the changing light.',
+            mk: 'Кањонот Матка се наоѓа југозападно од Скопје, по течението на реката Треска. Карпите и водата нудат поинаков поглед од градскиот. Одвојте време за одразите, облиците на карпите и промените на светлината.',
           },
         ],
       },
@@ -44,8 +43,8 @@ export const newsArticles: NewsArticle[] = [
         },
         paragraphs: [
           {
-            en: 'Respect local signs and paths, take your litter with you and give other visitors space. For a real excursion, check the current activity listing and follow its instructions. This AI-generated artwork is an artistic interpretation, not a photograph, a trip report or a promise of a particular view.',
-            mk: 'Почитувајте ги локалните ознаки и патеки, понесете го отпадот со себе и оставете простор за другите посетители. За вистински излет, проверете ја актуелната страница на активноста и следете ги упатствата. Ова дело генерирано со ВИ е уметничка интерпретација, а не фотографија, извештај од патување или ветување за одреден поглед.',
+            en: 'Plan your visit around the activities you want to enjoy, and check their current access arrangements before setting out. Follow local signs, keep to designated paths and take your litter with you. If joining an excursion, confirm its meeting point and included activities with the provider.',
+            mk: 'Испланирајте ја посетата според активностите што ве интересираат и проверете ги тековните услови за пристап пред поаѓање. Следете ги локалните ознаки, движете се по означените патеки и понесете го отпадот со себе. Ако се приклучувате на излет, потврдете ги местото на средба и вклучените активности со организаторот.',
           },
         ],
       },
@@ -58,14 +57,13 @@ export const newsArticles: NewsArticle[] = [
       mk: 'Миг покрај Охридското Езеро',
     },
     excerpt: {
-      en: 'An illustrated editorial example about lakeside light, the silhouette of Kaneo and leaving space for discovery.',
-      mk: 'Илустриран уреднички пример за езерската светлина, силуетата на Канео и оставањето простор за откривање.',
+      en: 'Lakeside walks, views towards Kaneo and a little time to discover Ohrid at your own pace.',
+      mk: 'Прошетки покрај езерото, погледи кон Канео и време да го откриете Охрид со сопствен ритам.',
     },
     category: {
-      en: 'Travel journal',
-      mk: 'Патепис',
+      en: 'Destination guide',
+      mk: 'Водич за дестинација',
     },
-    demonstration: true,
     cover: {
       src: '/images/news/lake-ohrid.webp',
       alt: {
@@ -81,8 +79,8 @@ export const newsArticles: NewsArticle[] = [
         },
         paragraphs: [
           {
-            en: 'A lakeside view can be a reason to pause. This editorial example imagines a quiet moment beside Lake Ohrid: noticing the water, the church silhouette and the changing evening light.',
-            mk: 'Погледот кон езерото може да биде причина за пауза. Овој уреднички пример замислува мирен миг покрај Охридското Езеро: набљудување на водата, силуетата на црквата и променливата вечерна светлина.',
+            en: 'Ohrid brings lakeside scenery and cultural heritage together. Make space in your day for both: a walk through the town and a pause beside the water. Notice how the light changes the view, and leave room for discoveries along the way.',
+            mk: 'Охрид ги спојува езерските предели и културното наследство. Одвојте време и за двете: прошетка низ градот и пауза покрај водата. Забележете како светлината го менува погледот и оставете простор за откритија по патот.',
           },
         ],
       },
@@ -93,8 +91,8 @@ export const newsArticles: NewsArticle[] = [
         },
         paragraphs: [
           {
-            en: 'A short walk, a photograph or a conversation can become the part of a journey you remember. The accompanying AI-generated illustration is an artistic interpretation of Ohrid, not a record of a Lumora trip or a promised itinerary.',
-            mk: 'Кратка прошетка, фотографија или разговор може да станат највпечатливиот дел од патувањето. Придружната илустрација генерирана со ВИ е уметничка интерпретација на Охрид, а не запис од патување на Lumora или ветена програма.',
+            en: 'A short walk, a photograph or a conversation can become the part of a journey you remember. When visiting churches or other cultural sites, respect posted guidance and people using the space. Check current opening arrangements for any places you hope to enter.',
+            mk: 'Кратка прошетка, фотографија или разговор може да станат највпечатливиот дел од патувањето. При посета на цркви и други културни места, почитувајте ги истакнатите упатства и луѓето што го користат просторот. Проверете го тековното работно време на местата во кои сакате да влезете.',
           },
         ],
       },
@@ -107,14 +105,13 @@ export const newsArticles: NewsArticle[] = [
       mk: 'Скопје: приказни покрај Вардар',
     },
     excerpt: {
-      en: 'An illustrated editorial example about the Stone Bridge, city silhouettes and seeing familiar streets with fresh curiosity.',
-      mk: 'Илустриран уреднички пример за Камениот мост, градските силуети и гледањето на познатите улици со нова љубопитност.',
+      en: 'Follow the Vardar, discover the Stone Bridge and see Skopje with fresh curiosity.',
+      mk: 'Прошетајте покрај Вардар, откријте го Камениот мост и погледнете го Скопје со нова љубопитност.',
     },
     category: {
       en: 'City stories',
       mk: 'Градски приказни',
     },
-    demonstration: true,
     cover: {
       src: '/images/news/skopje.webp',
       alt: {
@@ -130,8 +127,8 @@ export const newsArticles: NewsArticle[] = [
         },
         paragraphs: [
           {
-            en: 'Bridges, rooftops and river reflections give a city many different faces. This imagined view of Skopje brings the Stone Bridge and a fortress silhouette into one warm evening composition.',
-            mk: 'Мостовите, покривите и одразите во реката му даваат на градот многу различни лица. Овој замислен поглед кон Скопје ги спојува Камениот мост и силуетата на тврдината во една топла вечерна композиција.',
+            en: 'The Stone Bridge crosses the Vardar in central Skopje, while Kale is another familiar city landmark. Start with the river as a point of reference, then take time to notice the surrounding streets, rooftops and everyday life.',
+            mk: 'Камениот мост го премостува Вардар во центарот на Скопје, а Калето е уште една препознатлива градска знаменитост. Нека реката ви биде почетна ориентација, а потоа одвојте време за околните улици, покривите и секојдневниот живот.',
           },
         ],
       },
@@ -142,8 +139,8 @@ export const newsArticles: NewsArticle[] = [
         },
         paragraphs: [
           {
-            en: 'The details of a city are often found in everyday moments: a walk, a conversation or a pause beside the water. This AI-generated illustration combines landmarks creatively; it is not a geographically exact photograph or an announcement of a new Lumora service.',
-            mk: 'Деталите на градот често се наоѓаат во секојдневните мигови: прошетка, разговор или пауза покрај водата. Оваа илустрација генерирана со ВИ креативно ги спојува знаменитостите; таа не е географски прецизна фотографија или најава за нова услуга на Lumora.',
+            en: 'A city visit need not be a list of landmarks. Leave time for a conversation or a pause beside the water, and choose a walking route that suits your interests. Check access information for individual sites rather than assuming every place is open.',
+            mk: 'Посетата на градот не мора да биде само список на знаменитости. Оставете време за разговор или пауза покрај водата и изберете прошетка според вашите интереси. Проверете ги условите за пристап до поединечните места наместо да претпоставувате дека сите се отворени.',
           },
         ],
       },
@@ -156,14 +153,13 @@ export const newsArticles: NewsArticle[] = [
       mk: 'Пауза во македонската природа',
     },
     excerpt: {
-      en: 'An illustrated editorial example about mountain horizons, forest paths and appreciating the outdoors without rushing.',
-      mk: 'Илустриран уреднички пример за планинските хоризонти, шумските патеки и спокојното уживање во природата.',
+      en: 'Mountain horizons, forest paths and thoughtful ways to enjoy time outdoors in North Macedonia.',
+      mk: 'Планински хоризонти, шумски патеки и идеи за внимателно уживање во природата во Северна Македонија.',
     },
     category: {
-      en: 'Nature journal',
-      mk: 'Природен дневник',
+      en: 'Outdoor inspiration',
+      mk: 'Инспирација од природата',
     },
-    demonstration: true,
     cover: {
       src: '/images/news/macedonian-nature.webp',
       alt: {
@@ -179,20 +175,20 @@ export const newsArticles: NewsArticle[] = [
         },
         paragraphs: [
           {
-            en: 'A mountain horizon can change the pace of a day. In this artistic scene, a rocky path leads past forest and water towards distant peaks. It is an imagined landscape inspired by Macedonian nature, not an identified trail or a named lake.',
-            mk: 'Планинскиот хоризонт може да го промени ритамот на денот. Во оваа уметничка сцена, карпеста патека води покрај шума и вода кон далечни врвови. Тоа е замислен предел инспириран од македонската природа, а не означена патека или именувано езеро.',
+            en: 'An outdoor day can be as much about noticing small details as reaching a destination. Think about what you enjoy most: forest scenery, open views or a gentle pause along the way. Choose a marked route that suits your experience and the conditions.',
+            mk: 'Денот во природа може да биде посветен на малите детали исто колку и на стигнувањето до целта. Размислете што најмногу ви годи: шумски предели, отворени погледи или спокојна пауза по патот. Изберете означена патека соодветна на вашето искуство и на условите.',
           },
         ],
       },
       {
         heading: {
-          en: 'Let curiosity travel with care',
-          mk: 'Нека љубопитноста оди со внимание',
+          en: 'Plan with care',
+          mk: 'Планирајте внимателно',
         },
         paragraphs: [
           {
-            en: 'Enjoy outdoor places respectfully and follow local guidance. For an actual trip, confirm the route, conditions and activity details with its provider. The AI-generated illustration supports this editorial example; it does not document a Lumora event or establish a hiking route.',
-            mk: 'Уживајте во природата со почит и следете ги локалните упатства. За вистинско патување, потврдете ги рутата, условите и деталите за активноста со организаторот. Илустрацијата генерирана со ВИ го придружува овој уреднички пример; таа не документира настан на Lumora и не утврдува планинарска рута.',
+            en: 'Before setting out, check the weather, route information and local guidance. Leave your plans with someone, take suitable equipment and carry your litter home. For an organized activity, confirm the route and requirements with the provider; an illustration is inspiration, not a route map.',
+            mk: 'Пред поаѓање, проверете ги временската прогноза, информациите за патеката и локалните упатства. Известете некого за вашите планови, понесете соодветна опрема и вратете го отпадот со себе. За организирана активност, потврдете ги рутата и условите со организаторот; илустрацијата е инспирација, а не карта на патеката.',
           },
         ],
       },

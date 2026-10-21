@@ -4,9 +4,9 @@ University-only update, 21 October 2026. The commercial project and external ser
 
 ## News
 
-`/news/` and `/news/:slug/` use the existing router, photography, cards, typography and EN/MK system. Both known article paths are generated as directory indexes for direct opening/refresh on Pages or RepoRun. Unknown articles use the branded noindex 404. Canonical, Open Graph and sitemap generation includes the new routes and preserves the trailing-slash convention.
+`/news/` and `/news/:slug/` use the existing router, photography, cards, typography and EN/MK system. All four known article paths are generated as directory indexes for direct opening/refresh on Pages or RepoRun. Unknown articles use the branded noindex 404. Canonical, Open Graph and sitemap generation includes the new routes and preserves the trailing-slash convention.
 
-No owner-approved announcements were found. The four entries in `src/data/news.ts` are visibly labelled demonstration content for the university presentation, with no invented publication dates. They are not claims of events, launches or company milestones. User-supplied AI-generated illustrations interpret the destinations; they do not document real places with photographic accuracy. Replace examples with verified bilingual content; only supply `publishedAt` when there is a genuine publication date. An empty array renders a translated empty state. Article sections use text, not injected HTML.
+News & Stories / Новости и приказни presents four evergreen destination guides and travel inspiration in `src/data/news.ts`, without public demonstration banners or labels. No dates, authors, events or company announcements are invented. The university purpose remains documented in the README. AI-generated illustrations and bilingual alt text remain unchanged; they are artistic interpretations, not documentary photographs or route maps. Only supply `publishedAt` for a genuine publication date. An empty array renders a translated empty state. Article sections use plain text, not injected HTML.
 
 ## Actual storage and behavior
 
@@ -29,15 +29,15 @@ Use the unchanged pinned dependencies: `pnpm install --frozen-lockfile`, `pnpm t
 
 `scripts/audit-university.mjs` now also scans News, both articles, invalid articles, the privacy notice and open settings. It fetches axe into test-process memory only; it does not install or ship a tracker. Reflow/automated checks do not replace manual screen-reader and native zoom testing. Runtime Nginx/RepoRun CAS validation requires Docker/platform access.
 
-GitHub Pages retains `/lumora-company-website/` and its unchanged workflow. RepoRun retains `/` and blank unknown origin, with no absolute Pages canonical until a real origin is configured. No dependency, backend, CMS, authentication, payment or tracking integration was added. Builds/tests create ignored output only. Review the implementation and demonstration content before approving any commit/push; no publication is automatic from local changes.
+GitHub Pages retains `/lumora-company-website/` and its unchanged workflow. RepoRun retains `/` and blank unknown origin, with no absolute Pages canonical until a real origin is configured. No dependency, backend, CMS, authentication, payment or tracking integration was added. Builds/tests create ignored output only. Review editorial content before publication; a push to main triggers the existing Pages workflow.
 
 ## Македонски
 
-Новостите и деталите за статиите се целосно на EN/MK. Четирите примери се јасно означени како демонстрација за универзитетската презентација, без датуми или измислени соопштенија. Податоците лесно се заменуваат во `src/data/news.ts`.
+„Новости и приказни“ и деталите за статиите се на EN/MK. Четирите водичи и патувачки приказни немаат демонстративни ознаки, измислени датуми, автори или соопштенија. Универзитетскиот контекст останува во README. Податоците се во `src/data/news.ts`.
 
 Нема HTTP колачиња, аналитика или маркетинг-следење. Известувањето и поставките се функционални: потврдата се зачувува во `lumora-cookie-preferences`, а изборот за паметење на јазикот го контролира `lumora-language`. Двата записа се localStorage, не колачиња. Со исклучување се брише зачуваниот јазик; тековниот останува активен до освежување. Поставки за колачиња во подножјето повторно го отвора дијалогот. При блокирано складирање, изборот важи само за посетата и се прикажува објаснување.
 
-Зачувани се Pages base path, постојниот workflow, RepoRun поставките и вистинските тури/фотографии. Не се додадени сервиси или нови зависности. Потребни се преглед на примерите, рачна проверка со читач на екран и одобрение пред commit/push. Постоењето на банер не е доказ за правна усогласеност.
+Зачувани се Pages base path, постојниот workflow, RepoRun поставките и вистинските тури/фотографии. Не се додадени сервиси или нови зависности. Потребни се уреднички преглед, рачна проверка со читач на екран и одобрение пред commit/push. Постоењето на банер не е доказ за правна усогласеност.
 
 ## Verification record — initial two-article feature, 21 October 2026
 
@@ -110,3 +110,10 @@ The user supplied a 2×2 AI-generated travel artwork sheet. Its cream gutters an
 The first two URLs are preserved. All four EN/MK editorial examples remain undated and clearly labelled; body copy and alt text identify the AI-generated artistic interpretation, not documentary photography or a business announcement. The imagined nature scene is not falsely identified as a specific trail/lake. Each article's generated and runtime Open Graph image now matches its cover, with base-aware paths. Article image frames use 3:2 proportions so the integrated signatures remain visible.
 
 Verification: frozen install, TypeScript, ESLint and 3 unit tests passed. Both production builds generated 16 routes. Final browser suites passed 48/48 for GitHub Pages and 48/48 for root hosting, including EN/MK, cards and article refreshes, 375/430/768/1024/1440 widths, WebP decoding/mapping, alt text, metadata, canonical URLs, sitemap, cookie/privacy behavior and all existing tours. Initial mobile image assertions assumed below-fold lazy images had already loaded; the tests now scroll each image into view and await decoding rather than disabling lazy loading. The older audit totals above are historical; the full axe run was not repeated for this artwork-only refresh. No cookie/privacy source, dependencies, deployment settings, official logo or existing tour images/data were changed. No commercial project files were modified. Nothing is merged or deployed by this refresh.
+
+
+## Evergreen editorial revision
+
+The records above describe earlier implementation snapshots. The current public section is News & Stories / Новости и приказни. Demonstration banners, badges and undated-example labels were removed. The four existing routes, illustrations, privacy controls and deployment configuration are preserved. Basic geography was cross-checked against the [City of Skopje](https://skopje.gov.mk/en_us/footer/fakti-simboli/), its [Matka information](https://skopje.gov.mk/) and [UNESCO’s Ohrid entry](https://whc.unesco.org/en/list/99/). No historical dates, prices, availability promises or business announcements were added.
+
+Verification for this revision: typecheck, ESLint and all 3 privacy unit tests passed. Both production builds passed. Root-path browser regressions: 48/48 passed. Pages browser regressions: 47/48 passed initially; the remaining MK 768px case was interrupted by Edge `ERR_NETWORK_IO_SUSPENDED` and passed on its focused rerun (1/1). Coverage includes all four stories, EN/MK, images and localized metadata, direct refresh/404, canonical URLs, five responsive widths, navigation, tours, inquiry and privacy preference behavior. Mobile News was visually checked. Docker/RepoRun runtime was not tested in this editorial revision.

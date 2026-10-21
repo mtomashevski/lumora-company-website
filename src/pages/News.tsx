@@ -16,9 +16,6 @@ export default function News() {
         <p>{t('news.intro')}</p>
       </section>
       <section className="container news-list" aria-label={t('news.articles')}>
-        {newsArticles.some((article) => article.demonstration) && (
-          <p className="news-demonstration-note">{t('news.demonstrationNote')}</p>
-        )}
         {newsArticles.length ? (
           <div className="news-grid">
             {newsArticles.map((article) => (
@@ -39,26 +36,21 @@ export default function News() {
                 <div className="news-card-body">
                   <div className="news-meta">
                     {article.category && <span>{l(article.category)}</span>}
-                    {article.demonstration && (
-                      <span className="news-demo-badge">{t('news.demo')}</span>
-                    )}
                   </div>
                   <h2>
                     <Link to={'/news/' + article.slug}>{l(article.title)}</Link>
                   </h2>
                   <p>{l(article.excerpt)}</p>
-                  <span className="news-date">
-                    {article.publishedAt ? (
+                  {article.publishedAt && (
+                    <span className="news-date">
                       <time dateTime={article.publishedAt}>
                         {new Date(article.publishedAt).toLocaleDateString(
                           language === 'mk' ? 'mk-MK' : 'en-GB',
                           { dateStyle: 'long', timeZone: 'UTC' },
                         )}
                       </time>
-                    ) : (
-                      t('news.undated')
-                    )}
-                  </span>
+                    </span>
+                  )}
                   <Link
                     className="text-link"
                     to={'/news/' + article.slug}

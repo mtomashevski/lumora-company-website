@@ -66,7 +66,7 @@ for (const locale of ['en', 'mk'] as const) {
       await page.goto(path('news'));
     }
   });
-  test(`News articles, clear example labels, navigation and direct refresh: ${locale}`, async ({
+  test(`Evergreen News & Stories, no demonstration labels, navigation and direct refresh: ${locale}`, async ({
     page,
   }) => {
     await page.goto(path());
@@ -79,16 +79,22 @@ for (const locale of ['en', 'mk'] as const) {
       .click();
     await expect(page.locator('h1')).toHaveText(copy['news.title']);
     await expect(page.locator('.news-card')).toHaveCount(newsArticles.length);
-    await expect(page.locator('.news-demonstration-note')).toHaveText(
-      copy['news.demonstrationNote'],
+    await expect(page.locator('.news-demonstration-note, .news-demo-badge')).toHaveCount(0);
+    expect(await page.locator('main').innerText()).not.toMatch(
+      /demonstration|university|editorial example|демонстра|универзитет|уреднички пример/i,
     );
     await expect(page.locator('time')).toHaveCount(0);
     for (const article of newsArticles) {
       await page.goto(path('news/' + article.slug));
       await expect(page.locator('h1')).toHaveText(article.title[locale]);
       await expect(page.locator('.news-article-body h2')).toHaveCount(article.sections.length);
-      await expect(page.locator('.news-demonstration-note')).toHaveText(
-        copy['news.demonstrationNote'],
+      await expect(page.locator('.news-demonstration-note, .news-demo-badge, time')).toHaveCount(0);
+      expect(await page.locator('main').innerText()).not.toMatch(
+        /demonstration|university|editorial example|демонстра|универзитет|уреднички пример/i,
+      );
+      await expect(page.locator('meta[name="description"]')).toHaveAttribute(
+        'content',
+        article.excerpt[locale],
       );
       expect((await page.reload())?.status()).toBe(200);
       await expect(page.locator('h1')).toHaveText(article.title[locale]);

@@ -20,23 +20,16 @@ function ArticleContent({ article }: { article: Article }) {
         {article.category && <span className="eyebrow">{l(article.category)}</span>}
         <h1>{l(article.title)}</h1>
         <p className="lead">{l(article.excerpt)}</p>
-        <p className="news-date">
-          {article.publishedAt ? (
-            <>
-              {t('news.published')}{' '}
-              <time dateTime={article.publishedAt}>
-                {new Date(article.publishedAt).toLocaleDateString(
-                  language === 'mk' ? 'mk-MK' : 'en-GB',
-                  { dateStyle: 'long', timeZone: 'UTC' },
-                )}
-              </time>
-            </>
-          ) : (
-            t('news.undated')
-          )}
-        </p>
-        {article.demonstration && (
-          <p className="news-demonstration-note">{t('news.demonstrationNote')}</p>
+        {article.publishedAt && (
+          <p className="news-date">
+            {t('news.published')}{' '}
+            <time dateTime={article.publishedAt}>
+              {new Date(article.publishedAt).toLocaleDateString(
+                language === 'mk' ? 'mk-MK' : 'en-GB',
+                { dateStyle: 'long', timeZone: 'UTC' },
+              )}
+            </time>
+          </p>
         )}
       </header>
       {article.cover && (

@@ -1,19 +1,14 @@
 import type { TranslationKey } from './en';
 // Matching keys keep Macedonian coverage checked by TypeScript.
 export const mk: Record<TranslationKey, string> = {
-  'nav.news': 'Новости',
-  'news.eye': 'ПРИКАЗНИ И ВПЕЧАТОЦИ',
-  'news.title': 'Новости и новитети',
-  'news.intro':
-    'Приказни, патеписи и новитети, со простор за поблиско запознавање со Северна Македонија.',
-  'news.articles': 'Најнови статии',
-  'news.demo': 'Демонстрација',
-  'news.demonstrationNote':
-    'Демонстративна содржина за универзитетската презентација. Овие примери не се вистински соопштенија на Lumora и немаат датум на објавување.',
-  'news.undated': 'Пример без датум',
+  'nav.news': 'Новости и приказни',
+  'news.eye': 'ИНСПИРАЦИЈА ЗА ПАТУВАЊЕ',
+  'news.title': 'Новости и приказни',
+  'news.intro': 'Водичи за дестинации и инспирација за поблиско запознавање со Северна Македонија.',
+  'news.articles': 'Приказни за дестинациите',
   'news.published': 'Објавено:',
   'news.readMore': 'Прочитај повеќе',
-  'news.back': 'Назад кон новостите',
+  'news.back': 'Назад кон новостите и приказните',
   'news.empty': 'Сè уште нема достапни статии. Проверете повторно подоцна.',
   'cookies.title': 'Вашата приватност е важна',
   'cookies.notice':
