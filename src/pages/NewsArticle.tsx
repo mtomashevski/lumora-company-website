@@ -9,7 +9,7 @@ import type { NewsArticle as Article } from '../types/news';
 
 function ArticleContent({ article }: { article: Article }) {
   const { t, l, language } = useLanguage();
-  usePageMeta(l(article.title), l(article.excerpt));
+  usePageMeta(l(article.title), l(article.excerpt), false, article.cover?.src);
   return (
     <article className="container news-article">
       <Link to="/news" className="text-link">

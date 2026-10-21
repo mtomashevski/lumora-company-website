@@ -7,7 +7,7 @@ import { Image } from '../components/common/Image';
 
 export default function News() {
   const { t, l, language } = useLanguage();
-  usePageMeta(t('news.title'), t('news.intro'));
+  usePageMeta(t('news.title'), t('news.intro'), false, newsArticles[0]?.cover?.src);
   return (
     <>
       <section className="container page-intro news-intro">

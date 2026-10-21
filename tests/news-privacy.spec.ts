@@ -15,6 +15,57 @@ async function language(page: Page, locale: 'en' | 'mk') {
 }
 for (const locale of ['en', 'mk'] as const) {
   const copy = locale === 'mk' ? mk : en;
+  test(`Four illustrations match their articles, localized alt text and sharing metadata: ${locale}`, async ({
+    page,
+    request,
+  }) => {
+    const mapping = [
+      ['a-thoughtful-day-outdoors', 'matka-canyon'],
+      ['a-moment-by-lake-ohrid', 'lake-ohrid'],
+      ['skopje-stories-by-the-vardar', 'skopje'],
+      ['a-pause-in-macedonian-nature', 'macedonian-nature'],
+    ];
+    expect(newsArticles.map((article) => article.slug)).toEqual(mapping.map(([slug]) => slug));
+    expect(new Set(newsArticles.map((article) => article.title[locale])).size).toBe(4);
+    await page.goto(path('news'));
+    await language(page, locale);
+    await page.getByRole('button', { name: copy['cookies.acknowledge'], exact: true }).click();
+    for (const [index, [slug, image]] of mapping.entries()) {
+      const imagePath = path('images/news/' + image + '.webp');
+      await expect(page.locator('.news-card-image img').nth(index)).toHaveAttribute(
+        'src',
+        imagePath,
+      );
+      const asset = await request.get(imagePath);
+      expect(asset.status()).toBe(200);
+      expect(asset.headers()['content-type']).toContain('image/webp');
+      expect((await asset.body()).length).toBeLessThan(160_000);
+      const response = await page.goto(path('news/' + slug));
+      const cover = page.locator('.news-article-cover img');
+      await expect(cover).toHaveAttribute('src', imagePath);
+      await expect(cover).toHaveAttribute('alt', newsArticles[index].cover!.alt[locale]);
+      await expect
+        .poll(() =>
+          cover.evaluate((image: HTMLImageElement) => image.complete && image.naturalWidth >= 700),
+        )
+        .toBe(true);
+      const html = await response!.text();
+      const origin =
+        process.env.TEST_SITE_URL ?? (base === '/' ? '' : 'https://mtomashevski.github.io');
+      if (origin) {
+        const expected = origin + imagePath;
+        expect(html).toContain(`property="og:image" content="${expected}"`);
+        await expect(page.locator('meta[property="og:image"]')).toHaveAttribute(
+          'content',
+          expected,
+        );
+      } else {
+        expect(html).not.toContain('property="og:image"');
+        await expect(page.locator('meta[property="og:image"]')).toHaveCount(0);
+      }
+      await page.goto(path('news'));
+    }
+  });
   test(`News articles, clear example labels, navigation and direct refresh: ${locale}`, async ({
     page,
   }) => {
@@ -78,9 +129,13 @@ for (const locale of ['en', 'mk'] as const) {
         await expect(page.locator('h1')).toHaveCount(1);
         for (const image of await page.locator('img').all()) {
           expect(await image.getAttribute('alt')).toBeTruthy();
-          expect(
-            await image.evaluate((img: HTMLImageElement) => img.complete && img.naturalWidth > 0),
-          ).toBe(true);
+          // Four cards can place lazy images well below the fold on a phone.
+          await image.scrollIntoViewIfNeeded();
+          await expect
+            .poll(() =>
+              image.evaluate((img: HTMLImageElement) => img.complete && img.naturalWidth > 0),
+            )
+            .toBe(true);
         }
       }
     });

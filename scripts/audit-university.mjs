@@ -11,6 +11,7 @@ const headers = await securityHeaders();
 const browser = await chromium.launch({ channel: 'msedge' });
 const paths = ['', 'experiences', 'destinations', 'about', 'contact', 'privacy',
   'news', 'news/a-moment-by-lake-ohrid', 'news/a-thoughtful-day-outdoors', 'news/not-a-story',
+  'news/skopje-stories-by-the-vardar', 'news/a-pause-in-macedonian-nature',
   'experiences/macedonia-heritage-vodno-matka', 'experiences/vodno-to-matka-journey',
   'experiences/three-day-ohrid-bitola-debar', 'experiences/two-day-ohrid-boat-hotel',
   'experiences/lake-ohrid-legends-from-skopje', 'not-a-page', 'experiences/not-a-tour'];

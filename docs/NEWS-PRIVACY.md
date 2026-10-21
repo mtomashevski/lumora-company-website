@@ -6,7 +6,7 @@ University-only update, 21 October 2026. The commercial project and external ser
 
 `/news/` and `/news/:slug/` use the existing router, photography, cards, typography and EN/MK system. Both known article paths are generated as directory indexes for direct opening/refresh on Pages or RepoRun. Unknown articles use the branded noindex 404. Canonical, Open Graph and sitemap generation includes the new routes and preserves the trailing-slash convention.
 
-No owner-approved announcements were found. The two entries in `src/data/news.ts` are visibly labelled demonstration content for the university presentation, with no invented publication dates. They are not claims of events, launches or company milestones. Supplied photographs illustrate destinations. Replace examples with verified bilingual content; only supply `publishedAt` when there is a genuine publication date. An empty array renders a translated empty state. Article sections use text, not injected HTML.
+No owner-approved announcements were found. The four entries in `src/data/news.ts` are visibly labelled demonstration content for the university presentation, with no invented publication dates. They are not claims of events, launches or company milestones. User-supplied AI-generated illustrations interpret the destinations; they do not document real places with photographic accuracy. Replace examples with verified bilingual content; only supply `publishedAt` when there is a genuine publication date. An empty array renders a translated empty state. Article sections use text, not injected HTML.
 
 ## Actual storage and behavior
 
@@ -33,13 +33,13 @@ GitHub Pages retains `/lumora-company-website/` and its unchanged workflow. Repo
 
 ## Македонски
 
-Новостите и деталите за статиите се целосно на EN/MK. Двата примера се јасно означени како демонстрација за универзитетската презентација, без датуми или измислени соопштенија. Податоците лесно се заменуваат во `src/data/news.ts`.
+Новостите и деталите за статиите се целосно на EN/MK. Четирите примери се јасно означени како демонстрација за универзитетската презентација, без датуми или измислени соопштенија. Податоците лесно се заменуваат во `src/data/news.ts`.
 
 Нема HTTP колачиња, аналитика или маркетинг-следење. Известувањето и поставките се функционални: потврдата се зачувува во `lumora-cookie-preferences`, а изборот за паметење на јазикот го контролира `lumora-language`. Двата записа се localStorage, не колачиња. Со исклучување се брише зачуваниот јазик; тековниот останува активен до освежување. Поставки за колачиња во подножјето повторно го отвора дијалогот. При блокирано складирање, изборот важи само за посетата и се прикажува објаснување.
 
 Зачувани се Pages base path, постојниот workflow, RepoRun поставките и вистинските тури/фотографии. Не се додадени сервиси или нови зависности. Потребни се преглед на примерите, рачна проверка со читач на екран и одобрение пред commit/push. Постоењето на банер не е доказ за правна усогласеност.
 
-## Verification record — 21 October 2026
+## Verification record — initial two-article feature, 21 October 2026
 
 Overall: PASS WITH WARNINGS — ready for university review, then approval before publication.
 
@@ -95,3 +95,18 @@ Paths are relative to this feature checkout. M = modified; ?? = new/untracked. N
 ?? tests/news-privacy.spec.ts
 ?? tests/privacy-preferences.unit.mjs
 ```
+
+## Four-illustration editorial refresh
+
+The user supplied a 2×2 AI-generated travel artwork sheet. Its cream gutters and outer margin were cropped away; four WebP exports retain the purple/cream palette and integrated LUMORA signature. The official floral logo is unchanged. The source PNG was deleted only after all exports, website mappings and both deployment variants passed verification. Crop rectangles, dimensions and encoding details are recorded in public/images/CREDITS.md. No source sheet or screenshot is committed.
+
+| News article slug | Optimized cover in public/images/news/ |
+| --- | --- |
+| a-thoughtful-day-outdoors | matka-canyon.webp (top-left panel) |
+| a-moment-by-lake-ohrid | lake-ohrid.webp (top-right panel) |
+| skopje-stories-by-the-vardar | skopje.webp (bottom-left panel) |
+| a-pause-in-macedonian-nature | macedonian-nature.webp (bottom-right panel) |
+
+The first two URLs are preserved. All four EN/MK editorial examples remain undated and clearly labelled; body copy and alt text identify the AI-generated artistic interpretation, not documentary photography or a business announcement. The imagined nature scene is not falsely identified as a specific trail/lake. Each article's generated and runtime Open Graph image now matches its cover, with base-aware paths. Article image frames use 3:2 proportions so the integrated signatures remain visible.
+
+Verification: frozen install, TypeScript, ESLint and 3 unit tests passed. Both production builds generated 16 routes. Final browser suites passed 48/48 for GitHub Pages and 48/48 for root hosting, including EN/MK, cards and article refreshes, 375/430/768/1024/1440 widths, WebP decoding/mapping, alt text, metadata, canonical URLs, sitemap, cookie/privacy behavior and all existing tours. Initial mobile image assertions assumed below-fold lazy images had already loaded; the tests now scroll each image into view and await decoding rather than disabling lazy loading. The older audit totals above are historical; the full axe run was not repeated for this artwork-only refresh. No cookie/privacy source, dependencies, deployment settings, official logo or existing tour images/data were changed. No commercial project files were modified. Nothing is merged or deployed by this refresh.
