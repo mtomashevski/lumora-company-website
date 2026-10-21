@@ -1,5 +1,7 @@
 # Clean university publishing candidate — verification report
 
+Historical snapshot before the News/privacy-preferences update. For the subsequent feature behavior and validation, see [NEWS-PRIVACY.md](NEWS-PRIVACY.md). Storage counts, route counts and test totals below describe the earlier audit, not the updated application.
+
 Prepared 10 October 2026. This report describes the isolated university candidate; the earlier assessment audit and its findings remain preserved in the original checkout.
 
 ## Scope and Git state

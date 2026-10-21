@@ -3,6 +3,7 @@ import { loadEnv } from 'vite';
 import { experiences, photos } from '../src/data/experiences.ts';
 import { company } from '../src/data/company.ts';
 import { en } from '../src/i18n/en.ts';
+import { newsArticles } from '../src/data/news.ts';
 import {
   githubPagesBasePath,
   githubPagesOrigin,
@@ -30,11 +31,18 @@ const routes = [
   ['about', en['about.metaTitle'], en['about.metaDescription']],
   ['contact', en['contact.metaTitle'], en['contact.metaDescription']],
   ['privacy', en['privacy.metaTitle'], en['privacy.metaDescription']],
+  ['news', en['news.title'], en['news.intro'], newsArticles[0]?.cover?.src || photos.hero.src],
+  ...newsArticles.map((article) => [
+    'news/' + article.slug,
+    article.title.en,
+    article.excerpt.en,
+    article.cover?.src || photos.hero.src,
+  ]),
   ...experiences.map((e) => ['experiences/' + e.slug, e.title.en, e.shortDescription.en]),
 ];
 const source = await readFile('dist/index.html', 'utf8');
 const escape = (s) => s.replaceAll('&', '&amp;').replaceAll('"', '&quot;').replaceAll('<', '&lt;');
-for (const [route, title, description] of routes) {
+for (const [route, title, description, cover = photos.hero.src] of routes) {
   let html = source
     .replace(/<title>[\s\S]*?<\/title>/, `<title>${escape(title)} | ${company.companyName}</title>`)
     .replace(/(<meta\s+name="description"\s+content=")[^"]*/, `$1${escape(description)}`)
@@ -68,7 +76,7 @@ for (const [route, title, description] of routes) {
     };
     html = html.replace(
       '</head>',
-      `<link rel="canonical" href="${escape(url)}"/><meta property="og:url" content="${escape(url)}"/><meta property="og:image" content="${domain}${base}${photos.hero.src.slice(1)}"/><script type="application/ld+json">${JSON.stringify(structured).replaceAll('<', '\\u003c')}</script></head>`,
+      `<link rel="canonical" href="${escape(url)}"/><meta property="og:url" content="${escape(url)}"/><meta property="og:image" content="${domain}${base}${cover.slice(1)}"/><script type="application/ld+json">${JSON.stringify(structured).replaceAll('<', '\\u003c')}</script></head>`,
     );
   }
   await mkdir('dist/' + route, { recursive: true });

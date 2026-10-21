@@ -4,6 +4,15 @@ import { experiences, destinations } from '../src/data/experiences';
 import { company } from '../src/data/company';
 import { en } from '../src/i18n/en';
 import { mk } from '../src/i18n/mk';
+import { newsArticles } from '../src/data/news';
+test.beforeEach(async ({ page }) => {
+  // Existing flow regressions run as a returning visitor; first visits are tested separately.
+  await page.addInitScript(() => {
+    try { localStorage.setItem('lumora-cookie-preferences', JSON.stringify({
+      version: 1, necessary: true, rememberLanguage: true, savedAt: '2026-10-21T00:00:00.000Z',
+    })); } catch { /* Storage-blocked regression intentionally disables this. */ }
+  });
+});
 const testBase = process.env.TEST_BASE_PATH || '/';
 const appPath = (route: string) => testBase + route.replace(/^\//, '');
 async function visit(page: Page, route: string) {
@@ -16,6 +25,9 @@ const routes = [
   '/about',
   '/contact',
   '/privacy',
+  '/news',
+  ...newsArticles.map((article) => '/news/' + article.slug),
+  '/news/missing-article',
   ...experiences.map((e) => '/experiences/' + e.slug),
   '/experiences/missing-trip',
   '/missing',
@@ -54,7 +66,7 @@ for (const language of ['en', 'mk'] as const) {
       page.on('pageerror', (error) => errors.push(error.message));
       page.on('console', (message) => {
         if (message.type() === 'error') {
-          const expectedDocument404 = /\/(?:missing|experiences\/missing-trip)$/.test(
+          const expectedDocument404 = /\/(?:missing|experiences\/missing-trip|news\/missing-article)$/.test(
             new URL(message.location().url || 'http://localhost').pathname,
           );
           if (!expectedDocument404) errors.push(message.text());
@@ -71,7 +83,7 @@ for (const language of ['en', 'mk'] as const) {
         ).toBe(true);
         expect(await page.title()).toContain(company.companyName);
         expect(await page.locator('meta[name="description"]').getAttribute('content')).toBeTruthy();
-        expect(await page.locator('body').innerText()).not.toMatch(
+        if (!route.startsWith('/news')) expect(await page.locator('body').innerText()).not.toMatch(
           /sample|demo|preview|university|fictional|illustrative|Lorem ipsum|TBD/i,
         );
         if (language === 'mk') expect(await page.locator('h1').innerText()).toMatch(/[А-Яа-я]/);
@@ -150,7 +162,7 @@ for (const language of ['en', 'mk'] as const) {
     ).toBeVisible();
     expect(await page.evaluate(() => navigator.clipboard.readText())).toContain('Test Traveler');
     expect(posts).toBe(0);
-    expect(await page.evaluate(() => Object.keys(localStorage))).toEqual(['lumora-language']);
+    expect(await page.evaluate(() => Object.keys(localStorage).sort())).toEqual(['lumora-cookie-preferences', 'lumora-language']);
   });
 }
 test('Language switches immediately, preserves route/filter/form, and survives refresh', async ({
@@ -200,7 +212,7 @@ test('Mobile navigation and language selector are keyboard accessible', async ({
   // A high-zoom/landscape viewport must scroll the menu, not hide focused controls.
   await page.setViewportSize({ width: 320, height: 225 });
   await page.locator('#menu-toggle').click();
-  for (let index = 0; index < 7; index++) await page.keyboard.press('Tab');
+  for (let index = 0; index < 8; index++) await page.keyboard.press('Tab');
   await expect(page.locator('.nav-cta')).toBeFocused();
   await expect(page.locator('.nav-cta')).toBeInViewport({ ratio: 1 });
   await page.keyboard.press('Escape');

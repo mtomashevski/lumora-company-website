@@ -3,6 +3,7 @@ import { CompanyInformation } from '../components/common/CompanyInformation';
 import { ExternalLink } from '../components/common/ExternalLink';
 import { usePageMeta } from '../hooks/usePageMeta';
 import { useLanguage } from '../i18n/LanguageContext';
+import { CookieSettingsButton } from '../components/privacy/PrivacyControls';
 export default function Privacy() {
   const { t } = useLanguage();
   usePageMeta(t('privacy.metaTitle'), t('privacy.metaDescription'));
@@ -17,6 +18,9 @@ export default function Privacy() {
       <p>{t('privacy.languageText')}</p>
       <h2>{t('privacy.cookiesTitle')}</h2>
       <p>{t('privacy.cookiesText')}</p>
+      <h2>{t('privacy.preferencesTitle')}</h2>
+      <p>{t('privacy.preferencesText')}</p>
+      <CookieSettingsButton />
       <h2>{t('privacy.externalTitle')}</h2>
       <p>{t('privacy.externalText')}</p>
       <h2>{t('privacy.questionsTitle')}</h2>

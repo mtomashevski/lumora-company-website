@@ -3,7 +3,12 @@ import { useLocation } from 'react-router-dom';
 import { company, website } from '../data/company';
 import { useLanguage } from '../i18n/LanguageContext';
 import { publicAsset } from '../utils/deployment';
-export function usePageMeta(title: string, description: string, noIndex = false) {
+export function usePageMeta(
+  title: string,
+  description: string,
+  noIndex = false,
+  image = '/images/experiences/macedonian-heritage/image2.avif',
+) {
   const { pathname } = useLocation();
   const { language } = useLanguage();
   useEffect(() => {
@@ -17,10 +22,9 @@ export function usePageMeta(title: string, description: string, noIndex = false)
       robots: noIndex ? 'noindex, follow' : 'index, follow',
       ...(website.siteUrl
         ? {
-            'og:url': website.siteUrl.replace(/\/$/, '') + publicAsset(pathname.replace(/\/+$/, '') + '/'),
-            'og:image':
-              website.siteUrl.replace(/\/$/, '') +
-              publicAsset('/images/experiences/macedonian-heritage/image2.avif'),
+            'og:url':
+              website.siteUrl.replace(/\/$/, '') + publicAsset(pathname.replace(/\/+$/, '') + '/'),
+            'og:image': website.siteUrl.replace(/\/$/, '') + publicAsset(image),
           }
         : {}),
     })) {
@@ -37,8 +41,9 @@ export function usePageMeta(title: string, description: string, noIndex = false)
     if (website.siteUrl && !noIndex) {
       const link = document.createElement('link');
       link.rel = 'canonical';
-      link.href = website.siteUrl.replace(/\/$/, '') + publicAsset(pathname.replace(/\/+$/, '') + '/');
+      link.href =
+        website.siteUrl.replace(/\/$/, '') + publicAsset(pathname.replace(/\/+$/, '') + '/');
       document.head.append(link);
     }
-  }, [title, description, pathname, noIndex, language]);
+  }, [title, description, pathname, noIndex, language, image]);
 }

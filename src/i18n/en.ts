@@ -1,5 +1,43 @@
 // UI copy stays centralized; activity-specific copy lives in the bilingual catalog.
 export const en = {
+  'nav.news': 'News',
+  'news.eye': 'STORIES & PERSPECTIVES',
+  'news.title': 'News & Updates',
+  'news.intro':
+    'Stories, travel notes and updates, with space for a closer look at North Macedonia.',
+  'news.articles': 'Latest articles',
+  'news.demo': 'Demonstration',
+  'news.demonstrationNote':
+    'Demonstration content for the university presentation. These examples are not real Lumora announcements and have no publication date.',
+  'news.undated': 'Undated example',
+  'news.published': 'Published:',
+  'news.readMore': 'Read more',
+  'news.back': 'Back to News',
+  'news.empty': 'No articles are available yet. Please check back later.',
+  'cookies.title': 'Your privacy matters',
+  'cookies.notice':
+    'We remember your language using browser storage. There are no analytics or marketing trackers. You can review or change your preferences.',
+  'cookies.settings': 'Cookie Settings',
+  'cookies.customize': 'Preferences',
+  'cookies.acknowledge': 'Got it',
+  'cookies.readPrivacy': 'Privacy information',
+  'cookies.close': 'Close privacy settings',
+  'cookies.explanation':
+    'This website uses localStorage, not HTTP cookies, for the settings below. No analytics, advertising scripts or embedded social widgets are loaded.',
+  'cookies.necessaryTitle': 'Privacy preference record · always stored when saved',
+  'cookies.necessaryText':
+    'lumora-cookie-preferences remembers that you have reviewed this notice, your language-storage choice, the preference version and the time you saved it. It contains no inquiry details.',
+  'cookies.rememberLanguage': 'Remember my language on this device',
+  'cookies.languageHelp':
+    'Uses lumora-language in localStorage. Turning this off removes the saved language; your current language stays active until you refresh.',
+  'cookies.noTracking':
+    'There are no optional tracking categories to accept or reject. External Instagram and GetYourGuide pages have their own policies.',
+  'cookies.save': 'Save preferences',
+  'cookies.unavailable':
+    'Saved for this visit only. Browser storage is unavailable, so preferences cannot survive a refresh.',
+  'privacy.preferencesTitle': 'Your privacy settings',
+  'privacy.preferencesText':
+    'The versioned lumora-cookie-preferences localStorage record stores your acknowledgment, language-storage choice and save time. It is not an HTTP cookie and contains no inquiry details. Use Cookie Settings below or in the footer to change your choice. Outdated or invalid records show the notice again. If browser storage is blocked, choices work for the current visit only.',
   'nav.home': 'Home',
   'nav.experiences': 'Experiences',
   'nav.destinations': 'Destinations',
@@ -236,7 +274,7 @@ export const en = {
     'The form sends the details you provide to Lumora’s configured inquiry service so your request can be answered. An inquiry is not a booking. Contact Lumora with questions about the handling of your request.',
   'privacy.languageTitle': 'Language preference',
   'privacy.languageText':
-    'The website stores your selected EN/MK language in localStorage under lumora-language. This remembers your preference on this device. It does not store your inquiry details. You can remove this preference by clearing this website’s browser storage.',
+    'The website remembers your selected EN/MK language in localStorage under lumora-language. You can turn this off in Cookie Settings; the saved language is then removed and a new visit starts in English. Your current language remains active until refresh. No inquiry details are stored.',
   'privacy.cookiesTitle': 'Cookies and analytics',
   'privacy.cookiesText':
     'This website does not use analytics or non-essential tracking cookies. Ordinary technical request information may be processed by the hosting provider to serve and secure the website.',
