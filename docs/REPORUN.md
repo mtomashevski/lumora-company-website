@@ -116,8 +116,10 @@ RepoRun handles ingress, HTTPS certificates and CAS authentication. Confirm HTTP
 and the university's authentication/logging/privacy policy with the operator.
 No HSTS is assumed before the actual HTTPS endpoint is known. A framing restriction
 means the application is opened directly, not embedded in the university portal.
-The application has no tracking cookies; its only persistent browser value is the
-EN/MK language preference. Inquiry details stay in memory until the visitor copies
+The application has no HTTP cookies or optional tracking. Its persistent browser
+values are the privacy preference record and, when enabled, the EN/MK language
+preference, both in localStorage. Footer Cookie Settings reopens preferences.
+Inquiry details stay in memory until the visitor copies
 and sends them externally. CAS cookies belong to the university's access layer.
 
 Before deployment, check `id`, `/healthz`, generated-route refreshes, custom 404,

@@ -10,6 +10,7 @@ const axeSource = await axeResponse.text();
 const headers = await securityHeaders();
 const browser = await chromium.launch({ channel: 'msedge' });
 const paths = ['', 'experiences', 'destinations', 'about', 'contact', 'privacy',
+  'news', 'news/a-moment-by-lake-ohrid', 'news/a-thoughtful-day-outdoors', 'news/not-a-story',
   'experiences/macedonia-heritage-vodno-matka', 'experiences/vodno-to-matka-journey',
   'experiences/three-day-ohrid-bitola-debar', 'experiences/two-day-ohrid-boat-hotel',
   'experiences/lake-ohrid-legends-from-skopje', 'not-a-page', 'experiences/not-a-tour'];
@@ -48,6 +49,8 @@ try {
       });
       await context.addInitScript((locale) => {
         localStorage.setItem('lumora-language', locale);
+        localStorage.setItem('lumora-cookie-preferences', JSON.stringify({ version: 1, necessary: true,
+          rememberLanguage: true, savedAt: '2026-10-21T00:00:00.000Z' }));
         window.__auditCsp = [];
         document.addEventListener('securitypolicyviolation', (event) => {
           window.__auditCsp.push(`${event.violatedDirective}: ${event.blockedURI}`);
@@ -120,6 +123,34 @@ try {
       results.interactiveChecks++;
       results.cookies.push(...await context.cookies());
       await context.close();
+      // First visits need a fresh context, without the returning-visitor seed above.
+      const noticeContext = await browser.newContext({ viewport: { width, height: 900 } });
+      await noticeContext.route('**/*', async (route) => {
+        const response = await route.fetch();
+        await route.fulfill({ response, headers: { ...response.headers(), ...headers } });
+      });
+      await noticeContext.addInitScript((locale) => {
+        localStorage.setItem('lumora-language', locale);
+        window.__auditCsp = [];
+        document.addEventListener('securitypolicyviolation', (event) => {
+          window.__auditCsp.push(`${event.violatedDirective}: ${event.blockedURI}`);
+        });
+      }, language);
+      const noticePage = await noticeContext.newPage();
+      noticePage.on('pageerror', (error) => results.consoleErrors.push({ path: active, error: error.message }));
+      await noticePage.goto(new URL('news', origin).href);
+      await noticePage.waitForSelector('.privacy-notice');
+      active = language + '/privacy-notice @ ' + width;
+      await scan(noticePage, active);
+      results.interactiveChecks++;
+      await noticePage.locator('.privacy-notice button').nth(1).click();
+      await noticePage.waitForSelector('dialog[open]');
+      active = language + '/privacy-settings @ ' + width;
+      await scan(noticePage, active);
+      results.interactiveChecks++;
+      results.cspViolations.push(...await noticePage.evaluate(() => window.__auditCsp));
+      await noticePage.keyboard.press('Escape');
+      await noticeContext.close();
       console.log(`Audited ${language} at ${width}px`);
     }
   }

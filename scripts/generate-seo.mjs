@@ -3,6 +3,7 @@ import { loadEnv } from 'vite';
 import { experiences, photos } from '../src/data/experiences.ts';
 import { company } from '../src/data/company.ts';
 import { en } from '../src/i18n/en.ts';
+import { newsArticles } from '../src/data/news.ts';
 import {
   githubPagesBasePath,
   githubPagesOrigin,
@@ -30,6 +31,8 @@ const routes = [
   ['about', en['about.metaTitle'], en['about.metaDescription']],
   ['contact', en['contact.metaTitle'], en['contact.metaDescription']],
   ['privacy', en['privacy.metaTitle'], en['privacy.metaDescription']],
+  ['news', en['news.title'], en['news.intro']],
+  ...newsArticles.map((article) => ['news/' + article.slug, article.title.en, article.excerpt.en]),
   ...experiences.map((e) => ['experiences/' + e.slug, e.title.en, e.shortDescription.en]),
 ];
 const source = await readFile('dist/index.html', 'utf8');

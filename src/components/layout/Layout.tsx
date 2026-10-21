@@ -7,6 +7,7 @@ import type { TranslationKey } from '../../i18n/en';
 import { ExternalLink } from '../common/ExternalLink';
 import { Image } from '../common/Image';
 import { LanguageSelector } from './LanguageSelector';
+import { CookieSettingsButton, PrivacyControls } from '../privacy/PrivacyControls';
 export function Brand() {
   return (
     <span className="brand">
@@ -19,6 +20,7 @@ const links: [string, TranslationKey][] = [
   ['/experiences', 'nav.experiences'],
   ['/destinations', 'nav.destinations'],
   ['/about', 'nav.about'],
+  ['/news', 'nav.news'],
   ['/contact', 'nav.contact'],
 ];
 export function Layout() {
@@ -100,6 +102,7 @@ export function Layout() {
             <Link to="/experiences">{t('nav.experiences')}</Link>
             <Link to="/destinations">{t('nav.destinations')}</Link>
             <Link to="/about">{t('footer.story')}</Link>
+            <Link to="/news">{t('nav.news')}</Link>
             <ExternalLink href={company.getYourGuideUrl} label={t('common.reviews')} />
           </div>
           <div>
@@ -112,6 +115,7 @@ export function Layout() {
             <ExternalLink href={company.getYourGuideUrl} label="GetYourGuide" />
             {company.email && <a href={'mailto:' + company.email}>{company.email}</a>}
             <Link to="/privacy">{t('footer.privacy')}</Link>
+            <CookieSettingsButton />
           </div>
           <div className="footer-note">
             <span className="eyebrow">{t('footer.eye')}</span>
@@ -129,6 +133,7 @@ export function Layout() {
           <span>{t('footer.booking')}</span>
         </div>
       </footer>
+      <PrivacyControls />
     </>
   );
 }

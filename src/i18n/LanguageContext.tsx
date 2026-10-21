@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 import { en, type TranslationKey } from './en';
 import { mk } from './mk';
 import type { Language, LocalizedText } from './types';
+import { usePrivacyPreferences } from '../components/privacy/PrivacyProvider';
 const storageKey = 'lumora-language';
 function restoredLanguage(): Language {
   // Blocked storage must not prevent the website from loading.
@@ -19,15 +20,19 @@ const LanguageContext = createContext<{
   l: (text: LocalizedText) => string;
 } | null>(null);
 export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [language, setLanguage] = useState<Language>(restoredLanguage);
+  const { rememberLanguage } = usePrivacyPreferences();
+  const [language, setLanguage] = useState<Language>(() =>
+    rememberLanguage ? restoredLanguage() : 'en',
+  );
   useEffect(() => {
     document.documentElement.lang = language;
     try {
-      localStorage.setItem(storageKey, language);
+      if (rememberLanguage) localStorage.setItem(storageKey, language);
+      else localStorage.removeItem(storageKey);
     } catch {
       /* Switching still works when storage is disabled. */
     }
-  }, [language]);
+  }, [language, rememberLanguage]);
   const t = (key: TranslationKey, params: Record<string, string | number> = {}) =>
     Object.entries(params).reduce(
       (copy, [name, value]) => copy.replaceAll(`{${name}}`, String(value)),

@@ -11,7 +11,8 @@
     "preview:pages": "node --experimental-strip-types scripts/serve-pages.mjs",
     "typecheck": "tsc -b --pretty false",
     "format": "prettier --write src vite.config.ts index.html",
-    "test": "playwright test"
+    "test": "playwright test",
+    "test:unit": "node --experimental-strip-types --test tests/privacy-preferences.unit.mjs"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.3.3",
